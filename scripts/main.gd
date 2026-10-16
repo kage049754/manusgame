@@ -473,6 +473,8 @@ func _load_progress() -> void:
 		player_hp = STARTING_HP
 		enemy_hp = STARTING_HP
 		encounter = 1
+		rebirth_available = true
+		rebirth_armed = false
 	elif enemy_hp <= 0:
 		if encounter >= MAX_ENCOUNTERS:
 			player_hp = STARTING_HP
@@ -506,5 +508,5 @@ func _refresh() -> void:
 	reward_select.disabled = reward_claimed
 	next_button.disabled = round_active or (enemy_hp <= 0 and encounter < MAX_ENCOUNTERS and not reward_claimed)
 	next_button.text = "RESTART RUN" if run_over else ("CLAIM REWARD FIRST" if enemy_hp <= 0 and encounter < MAX_ENCOUNTERS and not reward_claimed else ("NEXT DUEL" if enemy_hp <= 0 else "NEXT HAND"))
-	if not round_active:
+	if not round_active and not (enemy_hp <= 0 and encounter < MAX_ENCOUNTERS and not reward_claimed):
 		_save_progress()
