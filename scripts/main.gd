@@ -528,25 +528,19 @@ func _load_progress() -> void:
 	var save_version := int(save.get_value("meta", "version", 0))
 	if save_version != SAVE_VERSION:
 		return
-	player_hp = int(save.get_value("run", "player_hp", STARTING_HP))
+	var saved_run := {"player_hp": save.get_value("run", "player_hp", STARTING_HP), "enemy_hp": save.get_value("run", "enemy_hp", STARTING_HP), "encounter": save.get_value("run", "encounter", 1), "shield": save.get_value("run", "shield", 0), "next_bonus_damage": save.get_value("run", "next_bonus_damage", 0), "next_start_shield": save.get_value("run", "next_start_shield", 0)}
+	var checked_run: Dictionary = Rules.validate_saved_run(saved_run, STARTING_HP, STARTING_HP + (MAX_ENCOUNTERS - 1) * 6, MAX_ENCOUNTERS)
+	if not bool(checked_run["valid"]):
+		return
+	player_hp = int(checked_run["player_hp"])
+	enemy_hp = int(checked_run["enemy_hp"])
+	encounter = int(checked_run["encounter"])
+	shield = int(checked_run["shield"])
+	next_bonus_damage = int(checked_run["next_bonus_damage"])
+	next_start_shield = int(checked_run["next_start_shield"])
 	rebirth_available = bool(save.get_value("run", "rebirth_available", true))
 	rebirth_armed = bool(save.get_value("run", "rebirth_armed", false))
 	reward_claimed = bool(save.get_value("run", "reward_claimed", false))
-	next_bonus_damage = int(save.get_value("run", "next_bonus_damage", 0))
-	next_start_shield = int(save.get_value("run", "next_start_shield", 0))
-	enemy_hp = int(save.get_value("run", "enemy_hp", STARTING_HP))
-	encounter = int(save.get_value("run", "encounter", 1))
-	# Reject malformed values before they can create impossible health or progression states.
-	if player_hp < 1 or player_hp > STARTING_HP or enemy_hp < 0 or enemy_hp > STARTING_HP + (MAX_ENCOUNTERS - 1) * 6 or encounter < 1 or encounter > MAX_ENCOUNTERS:
-		player_hp = STARTING_HP
-		enemy_hp = STARTING_HP
-		encounter = 1
-		rebirth_available = true
-		rebirth_armed = false
-		reward_claimed = false
-		next_bonus_damage = 0
-		next_start_shield = 0
-		return
 	if bool(save.get_value("run", "run_over", false)) or player_hp <= 0 or encounter > MAX_ENCOUNTERS:
 		player_hp = STARTING_HP
 		enemy_hp = STARTING_HP
