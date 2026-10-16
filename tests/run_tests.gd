@@ -53,6 +53,12 @@ func _initialize() -> void:
 	_check(valid_save["valid"] and valid_save["player_hp"] == 12 and valid_save["encounter"] == 3, "valid saved run values are preserved", failures)
 	_check(not Rules.validate_saved_run({"player_hp": 0, "enemy_hp": 24, "encounter": 3}, 30, 54, 5)["valid"], "zero player HP save is rejected", failures)
 	_check(Rules.validate_saved_run({"player_hp": 0, "enemy_hp": 24, "encounter": 3}, 30, 54, 5, true)["valid"], "terminal defeat save with zero HP can be restored", failures)
+	_check(Rules.validate_saved_terminal_state(0, 24, 3, 5, true), "terminal defeat state is accepted", failures)
+	_check(not Rules.validate_saved_terminal_state(0, 24, 3, 5, false), "zero HP without terminal flag is rejected", failures)
+	_check(Rules.validate_saved_terminal_state(20, 0, 5, 5, true), "final boss victory state is accepted", failures)
+	_check(not Rules.validate_saved_terminal_state(20, 20, 3, 5, true), "run-over flag with a living enemy and player is rejected", failures)
+	_check(not Rules.validate_saved_terminal_state(20, 0, 5, 5, false), "final boss defeat without terminal flag is rejected", failures)
+	_check(Rules.validate_saved_terminal_state(20, 0, 3, 5, false), "intermediate encounter victory remains resumable", failures)
 	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 55, "encounter": 3}, 30, 54, 5)["valid"], "enemy HP above campaign cap is rejected", failures)
 	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 6}, 30, 54, 5)["valid"], "encounter beyond campaign is rejected", failures)
 	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 3, "shield": -1}, 30, 54, 5)["valid"], "negative shield in save is rejected", failures)
@@ -75,7 +81,7 @@ func _initialize() -> void:
 	_check(not Rules.validate_saved_cards([], [{"rank":"A","suit":"♠"},{"rank":"10","suit":"♥"}], [{"rank":"A","suit":"♠"},{"rank":"4","suit":"♠"}]), "duplicate card across player and enemy hands is rejected", failures)
 	_check(Rules.validate_saved_cards([], [{"rank":"A","suit":"♠"},{"rank":"10","suit":"♥"}], [{"rank":"3","suit":"♠"},{"rank":"4","suit":"♠"}]), "distinct cards across an exhausted deck and both hands are accepted", failures)
 	if failures.is_empty():
-		print("PASS: 59 blackjack, combat, boss, and save-validation checks")
+		print("PASS: 65 blackjack, combat, boss, and save-validation checks")
 		quit(0)
 	else:
 		for failure in failures:
