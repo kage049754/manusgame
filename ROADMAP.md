@@ -35,7 +35,7 @@ Status: **In progress**
 - [x] Add automated tests for scoring, busts, deck uniqueness, and natural blackjack detection (9 checks).
 - [x] Add four automated shield-absorption checks and use the shared helper for incoming damage.
 - [ ] Add touch-friendly card layout and responsive phone sizing.
-- [x] Add enemy intent and clear combat result messages with result-specific status colors (CI verification pending).
+- [x] Add enemy intent and clear combat result messages with result-specific status colors (CI verified).
 
 ## Phase 2 — Classes, abilities, and builds
 Status: **Not started**
@@ -59,7 +59,7 @@ Status: **Not started**
 Status: **Not started**
 - [ ] Original character portraits and card art.
 - [ ] Gothic table backdrop, damage/shield impact effects, and full victory/defeat presentation.
-- [x] Add gold emphasis to newly drawn/revealed cards and color-code win, loss, bust, and push messages (CI verification pending).
+- [x] Add gold emphasis to newly drawn/revealed cards and color-code win, loss, bust, and push messages (CI verified).
 - [ ] Sound/music controls, reduced-motion option, readable contrast.
 - [ ] Test phone aspect ratios, touch input, card-row overflow, and reward selection.
 - [ ] Configure Android export templates and SDK/JDK.
@@ -123,9 +123,17 @@ Status: **Not started; blocked until offline release is stable**
 - Persisted current shield as part of the local run save. Invalid saved state is rejected before saved values are restored; initialized fresh-run defaults remain in place.
 
 
-### Card reveal and combat feedback (CI pending)
+### Card reveal and combat feedback (CI verified)
 - Newly drawn cards are emphasized with a thicker gold border; revealed enemy cards receive the same emphasis after the hand resolves.
 - Card faces are centered consistently, including the hidden-card back, and card panels are slightly larger for touch readability.
 - Combat status text now uses distinct colors for losses/busts, wins, and pushes.
-- Added three saved-state edge cases: negative bonus damage, oversized shield, and negative starting shield. Expected rules suite: 37 checks.
+- Added three saved-state edge cases: negative bonus damage, oversized shield, and negative starting shield. All 37 rules checks passed in run `38929155586`.
+- Fixed missing declarations and flow-container enum mismatches found in the Godot log. Godot validation passed with zero GDScript parse errors in run `38929155586`.
+- Android APK artifact `DungeonDealer-debug-apk` was verified in run `38929156007` (23,918,497 bytes; artifact ID `12058450847`, expires 2026-10-30).
 - Force-close recovery of an in-progress hand and physical Android gameplay remain unverified and are still explicit roadmap items.
+
+
+### Latest CI verification
+- Current gameplay code commit `a127c525fad726f6a5004727ecbd4ebbecb52be8` passed Godot validation: https://github.com/kage049754/manusgame/actions/runs/38929155586
+- Android debug APK build and artifact upload passed: https://github.com/kage049754/manusgame/actions/runs/38929156007
+- Physical Android device testing and force-close recovery of an in-progress hand remain unverified.
