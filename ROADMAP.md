@@ -6,6 +6,7 @@ Source of truth for implementation progress. Update after every meaningful commi
 - [x] Latest recovery fix preserves completed-duel victory/reward screens and terminal victory state across relaunch, rather than silently advancing to the next encounter.
 - [x] Fixed hand resolution so Raise the Limit uses its temporary threshold and simultaneous busts correctly count as a player bust; four new rules checks added (52 total).
 - [x] Restarting a run now clears pending damage, starting shield, and carried shield instead of leaking temporary rewards into the next run; reset state has an automated check (53 total).
+- [x] Saved defeats with 0 HP can now be restored as terminal defeat screens, while zero-HP saves without the terminal flag remain rejected; one new validation check added (54 total).
 - [x] Repository design contract and AI instructions written.
 - [x] Initial Godot project and playable prototype source added.
 - [x] Godot headless validation and main-scene smoke test passed in GitHub Actions.
@@ -184,3 +185,11 @@ Status: **Not started; blocked until offline release is stable**
 - Added a pure rules helper for the fresh-run resource baseline and a test confirming all temporary resources reset to zero.
 - Code commits: `f98711e8a4314591435730f1595d77d55563c35e`, `d198e8c23d369894094e2b80dab2e0480c3b1525`, `4a9b37a5b964f33681fd611af3023401d1258d30`, `bb210e4d98ee82309ce2c05bea828206d8c1c578`, plus the current reset implementation and test commits.
 - Next: verify CI and APK for the latest commit, then continue stabilization.
+
+
+### Terminal defeat recovery (implementation committed; CI pending)
+- Saved defeat state can now pass run validation only when the persisted run-over flag is set, allowing the defeat screen to remain visible after relaunch.
+- A zero-HP save without terminal-run metadata remains invalid.
+- Added an automated validation check; expected suite size is 54.
+- Code commits: `88de90c4faadfaec0c7e10a347b3cf9da0faf746`, `2f7cac2ecd703dc392aa09a888c86939516c1862`, `8937b9e368979cbadbebe59ca0d3f6550d56572e`.
+- Next: confirm latest Godot validation and Android APK artifact; continue with save-recovery edge cases.
