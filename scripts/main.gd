@@ -518,7 +518,7 @@ func _load_progress() -> void:
 	enemy_hp = int(save.get_value("run", "enemy_hp", STARTING_HP))
 	encounter = int(save.get_value("run", "encounter", 1))
 	# Reject malformed values before they can create impossible health or progression states.
-	if player_hp < 1 or player_hp > STARTING_HP or enemy_hp < 1 or enemy_hp > STARTING_HP + (MAX_ENCOUNTERS - 1) * 6 or encounter < 1 or encounter > MAX_ENCOUNTERS:
+	if player_hp < 1 or player_hp > STARTING_HP or enemy_hp < 0 or enemy_hp > STARTING_HP + (MAX_ENCOUNTERS - 1) * 6 or encounter < 1 or encounter > MAX_ENCOUNTERS:
 		player_hp = STARTING_HP
 		enemy_hp = STARTING_HP
 		encounter = 1
