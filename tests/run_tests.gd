@@ -18,8 +18,16 @@ func _initialize() -> void:
 	_check(not Rules.is_bust([{"rank":"A","suit":"♠"},{"rank":"9","suit":"♥"}]), "legal soft total is not bust", failures)
 	_check(Rules.is_blackjack([{"rank":"A","suit":"♠"},{"rank":"K","suit":"♥"}]), "two-card blackjack detected", failures)
 	_check(not Rules.is_blackjack([{"rank":"7","suit":"♠"},{"rank":"7","suit":"♥"},{"rank":"7","suit":"♦"}]), "three-card 21 is not natural blackjack", failures)
+	var shielded := Rules.absorb_damage(8, 5)
+	_check(shielded["damage"] == 3 and shielded["shield"] == 0 and shielded["absorbed"] == 5, "shield absorbs only its available amount", failures)
+	var fully_blocked := Rules.absorb_damage(4, 9)
+	_check(fully_blocked["damage"] == 0 and fully_blocked["shield"] == 5 and fully_blocked["absorbed"] == 4, "shield remains after fully blocking damage", failures)
+	var unshielded := Rules.absorb_damage(7, 0)
+	_check(unshielded["damage"] == 7 and unshielded["shield"] == 0, "damage passes through without shield", failures)
+	var invalid_damage := Rules.absorb_damage(-3, -2)
+	_check(invalid_damage["damage"] == 0 and invalid_damage["shield"] == 0, "negative damage and shield are safely clamped", failures)
 	if failures.is_empty():
-		print("PASS: 9 blackjack rules checks")
+		print("PASS: 13 blackjack and combat rules checks")
 		quit(0)
 	else:
 		for failure in failures:
