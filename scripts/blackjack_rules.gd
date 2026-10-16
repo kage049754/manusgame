@@ -47,11 +47,13 @@ static func absorb_damage(raw_damage: int, available_shield: int) -> Dictionary:
 		"absorbed": absorbed,
 	}
 
-static func resolve_hand_result(player_total: int, enemy_total: int, enemy_busted: bool = false) -> String:
+static func resolve_hand_result(player_total: int, enemy_total: int, enemy_busted: bool = false, player_bust_limit: int = 21) -> String:
+	# Resolve the player's bust first. An enemy bust must not rescue a player
+	# who exceeded their own limit. Trump Cards may temporarily raise that limit.
+	if player_total > player_bust_limit:
+		return "player_bust"
 	if enemy_busted or enemy_total > 21:
 		return "enemy_bust"
-	if player_total > 21:
-		return "player_bust"
 	if player_total > enemy_total:
 		return "player_win"
 	if player_total < enemy_total:
