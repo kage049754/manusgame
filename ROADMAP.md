@@ -13,7 +13,8 @@ Source of truth for implementation progress. Update after every meaningful commi
 - [x] Verified APK artifact for all eight Trump Cards and ten passive choices (commit `a35dd7067865d61dd02a6387230612f4edc88d70`).
 - [x] Verified Android debug APK artifact for the current playable prototype with card-panel UI (commit `34088cab24a2ffa4b3c097fc1a233917801db9b3`).
 - **Current phase:** Phase 4 — mobile presentation and stabilization in progress; core five-encounter run, rewards, eight Trump Cards, ten passives, six combos, and local persistence are implemented.
-- **Next step:** Add automated combat-transition/save-recovery tests, polish the mobile layout and boss feedback, then test the APK on a physical Android device.
+- **Latest milestone:** Local saves now carry a schema version; malformed health/encounter values are rejected and reset to a safe new run. Shield absorption is centralized in the rules module and has four additional automated checks. CI must verify this commit before this milestone is marked Verified.
+- **Next step:** Add automated combat-transition/restart tests, improve responsive mobile layout and boss feedback, then test the APK on a physical Android device.
 
 ## Phase 0 — Foundation
 Status: **In progress**
@@ -32,6 +33,7 @@ Status: **In progress**
 - [x] Add basic offline enemy draw strategy.
 - [ ] Prevent repeated resolution/state-transition bugs.
 - [x] Add automated tests for scoring, busts, deck uniqueness, and natural blackjack detection (9 checks).
+- [x] Add four automated shield-absorption checks and use the shared helper for incoming damage.
 - [ ] Add touch-friendly card layout and responsive phone sizing.
 - [ ] Add enemy intent and clear combat result messages.
 
@@ -48,7 +50,8 @@ Status: **Not started**
 Status: **Not started**
 - [x] Five encounters per run with escalating enemy HP, distinct enemy names, and scaling AI draw targets.
 - [x] Final boss encounter with higher draw target and increased bust punishment; additional unique boss mechanics still planned.
-- [ ] Local save/load with versioned save data (basic ConfigFile persistence is implemented; add versioning and recovery tests).
+- [x] Add version metadata to local ConfigFile saves and reject unsupported versions.
+- [x] Guard malformed health/encounter values during save recovery; full save corruption and force-close recovery tests remain open.
 - [ ] Run restart, unlocks, and progression.
 - [ ] Validate offline behavior after force close/relaunch.
 
@@ -85,3 +88,9 @@ Status: **Not started; blocked until offline release is stable**
 - Added Knight/Rogue/Dealer class selection and ten passive choices with gameplay effects.
 - Implemented all eight Trump Cards, three combo synergies, and basic local run persistence.
 - Godot validation passed for the latest passive fixes; APK export for commit `a35dd7067865d61dd02a6387230612f4edc88d70` is still running.
+
+### Versioned saves and shield rules
+- Added `meta.version = 1` to local saves; unsupported save versions are ignored rather than partially loaded.
+- Added bounds checks for player HP, enemy HP, and encounter index before resuming a run.
+- Extracted shield absorption into the rules module and added tests for partial block, full block, no shield, and invalid negative inputs.
+- Validation and APK export status pending for this commit until the newest GitHub Actions runs finish.
