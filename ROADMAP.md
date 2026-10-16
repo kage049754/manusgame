@@ -93,4 +93,4 @@ Status: **Not started; blocked until offline release is stable**
 - Added `meta.version = 1` to local saves; unsupported save versions are ignored rather than partially loaded.
 - Added bounds checks for player HP, enemy HP, and encounter index before resuming a run.
 - Extracted shield absorption into the rules module and added tests for partial block, full block, no shield, and invalid negative inputs.
-- Validation and APK export status pending for this commit until the newest GitHub Actions runs finish.
+- Godot validation passed and the Android APK artifact was verified for code commit `ae77c9c980062217293c111aeed1b6c27c6c9a50`.
