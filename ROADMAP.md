@@ -114,3 +114,9 @@ Status: **Not started; blocked until offline release is stable**
 - The House enters a Double or Nothing phase at half health: it draws to a higher target and deals +2 damage when it wins a hand.
 - Added a one-time phase-entry status message and four pure rules checks for phase boundaries.
 - The 28-check suite and Android APK build passed in CI. Physical device testing remains outstanding.
+
+
+### Save validation hardening (CI pending)
+- Extracted saved-run bounds checks into the shared rules module so malformed save values can be tested independently from the UI.
+- Added six tests covering valid restoration and invalid player HP, enemy HP, encounter index, negative shield, and implausible bonus damage.
+- Persisted current shield as part of the local run save. Invalid saved state is rejected before saved values are restored; initialized fresh-run defaults remain in place.
