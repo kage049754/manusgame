@@ -41,8 +41,15 @@ func _initialize() -> void:
 	_check(not Rules.is_boss_enraged(5, 5, 28, 54), "boss phase stays dormant above half health", failures)
 	_check(Rules.is_boss_enraged(5, 5, 27, 54), "boss phase activates at half health", failures)
 	_check(not Rules.is_boss_enraged(5, 5, 0, 54), "defeated boss cannot remain enraged", failures)
+	var valid_save := Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 3, "shield": 4}, 30, 54, 5)
+	_check(valid_save["valid"] and valid_save["player_hp"] == 12 and valid_save["encounter"] == 3, "valid saved run values are preserved", failures)
+	_check(not Rules.validate_saved_run({"player_hp": 0, "enemy_hp": 24, "encounter": 3}, 30, 54, 5)["valid"], "zero player HP save is rejected", failures)
+	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 55, "encounter": 3}, 30, 54, 5)["valid"], "enemy HP above campaign cap is rejected", failures)
+	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 6}, 30, 54, 5)["valid"], "encounter beyond campaign is rejected", failures)
+	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 3, "shield": -1}, 30, 54, 5)["valid"], "negative shield in save is rejected", failures)
+	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 3, "next_bonus_damage": 1000}, 30, 54, 5)["valid"], "implausible saved bonus damage is rejected", failures)
 	if failures.is_empty():
-		print("PASS: 28 blackjack, combat, transition, and boss checks")
+		print("PASS: 34 blackjack, combat, boss, and save-validation checks")
 		quit(0)
 	else:
 		for failure in failures:
