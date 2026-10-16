@@ -52,7 +52,7 @@ Status: **Not started**
 - [x] Final boss encounter with higher draw target and increased bust punishment; additional unique boss mechanics still planned.
 - [x] Add version metadata to local ConfigFile saves and reject unsupported versions.
 - [x] Guard malformed health/encounter values and saved card data during recovery.
-- [x] Persist deck, both hands, active-hand state, Trump availability, hand modifiers, and combat status so force-close/relaunch can restore an interrupted hand (CI verification pending).
+- [x] Persist deck, both hands, active-hand state, Trump availability, hand modifiers, and combat status so force-close/relaunch can restore an interrupted hand (CI verified; physical-device test pending).
 - [ ] Run restart, unlocks, and progression.
 - [ ] Validate offline behavior after force close/relaunch on a physical Android device.
 
@@ -141,8 +141,15 @@ Status: **Not started; blocked until offline release is stable**
 - Physical Android device testing and force-close recovery of an in-progress hand remain unverified.
 
 
-### Interrupted-hand save recovery (implementation in progress; device test pending)
+### Interrupted-hand save recovery (CI verified; device test pending)
 - Saves now include the current deck, player/enemy hands, active-hand flag, Trump readiness, hand modifiers, boss phase state, Second Wind state, and status message.
 - Startup restores saved card state rather than unconditionally starting a new hand; malformed or legacy saves without card arrays fall back to a fresh hand safely.
 - Validation checks saved cards against allowed rank/suit values. Five new checks bring the rules suite to 42, passed in GitHub Actions.
-- Final recovery changes are being validated and rebuilt; force-close/relaunch behavior on a physical Android device has not been tested.
+- Godot validation and all 42 rules checks passed for final recovery/documentation commit `f5cd5303ad9ffde3a2d8c21638c454890b52acc6` in run `38930681038`.
+- Android debug APK artifact `DungeonDealer-debug-apk` was verified in run `38930681100` (23,921,009 bytes; artifact ID `12058433754`, expires 2026-10-30).
+- Force-close/relaunch behavior on a physical Android device has not been tested.
+
+
+### Latest interrupted-hand recovery build
+- Godot validation: https://github.com/kage049754/manusgame/actions/runs/38930681038
+- Android APK build and artifact: https://github.com/kage049754/manusgame/actions/runs/38930681100
