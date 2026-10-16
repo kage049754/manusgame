@@ -582,18 +582,22 @@ func _load_progress() -> bool:
 	boss_phase_announced = bool(save.get_value("run", "boss_phase_announced", false))
 	second_wind_used = bool(save.get_value("run", "second_wind_used", false))
 	status_text = str(save.get_value("run", "status_text", "Run restored."))
-	if round_active and (player_hand.size() < 2 or enemy_hand.size() < 2):
-		round_active = false
+	if round_active and (not Rules.validate_saved_hand(player_hand) or not Rules.validate_saved_hand(enemy_hand)):
 		player_hand.clear()
 		enemy_hand.clear()
-		status_text = "Saved hand was incomplete. Starting a fresh hand safely."
+		return false
+	class_select.select(clampi(int(save.get_value("run", "class_index", 0)), 0, class_select.item_count - 1))
+	passive_select.select(clampi(int(save.get_value("run", "passive_index", 0)), 0, passive_select.item_count - 1))
 	if bool(save.get_value("run", "run_over", false)) or player_hp <= 0 or encounter > MAX_ENCOUNTERS:
 		player_hp = STARTING_HP
 		enemy_hp = STARTING_HP
 		encounter = 1
+		run_over = false
+		round_active = false
 		rebirth_available = true
 		rebirth_armed = false
-	elif enemy_hp <= 0:
+		return false
+	if enemy_hp <= 0:
 		if encounter >= MAX_ENCOUNTERS:
 			player_hp = STARTING_HP
 			enemy_hp = STARTING_HP
@@ -602,8 +606,8 @@ func _load_progress() -> bool:
 			encounter += 1
 			enemy_hp = STARTING_HP + (encounter - 1) * 6
 			player_hp = mini(STARTING_HP, player_hp + 5)
-	class_select.select(clampi(int(save.get_value("run", "class_index", 0)), 0, class_select.item_count - 1))
-	passive_select.select(clampi(int(save.get_value("run", "passive_index", 0)), 0, passive_select.item_count - 1))
+		round_active = false
+		return false
 	return true
 
 func _refresh() -> void:
