@@ -70,3 +70,6 @@ static func resolve_next_action(encounter: int, max_encounters: int, enemy_hp: i
 			return "claim_reward"
 		return "next_encounter"
 	return "next_hand"
+
+static func is_boss_enraged(encounter: int, max_encounters: int, enemy_hp: int, boss_max_hp: int) -> bool:
+	return encounter == max_encounters and enemy_hp > 0 and enemy_hp <= int(boss_max_hp / 2)
