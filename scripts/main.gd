@@ -119,12 +119,15 @@ func _button(value: String, color: Color) -> Button:
 
 func _start_encounter() -> void:
 	run_over = false
+	_build_deck()
+	_start_hand()
+
+func _start_hand() -> void:
 	round_active = true
 	shield = 0
 	trump_ready = true
 	player_hand.clear()
 	enemy_hand.clear()
-	_build_deck()
 	_draw_to(player_hand, 2)
 	_draw_to(enemy_hand, 2)
 	status_text = "Encounter %d: reach 21 without busting." % encounter
@@ -190,6 +193,8 @@ func _on_hit() -> void:
 		player_hp = maxi(0, player_hp - damage)
 		status_text = "BUST at %d. You take %d damage." % [total, damage]
 		_check_run_end(false)
+		if not run_over:
+			status_text += " Press NEXT HAND to continue the duel."
 	_refresh()
 
 func _on_stand() -> void:
@@ -217,6 +222,8 @@ func _on_stand() -> void:
 	else:
 		status_text = "Push: both hands total %d. No damage." % player_total
 	_check_run_end(enemy_hp <= 0)
+	if not run_over and enemy_hp > 0 and player_hp > 0:
+		status_text += " Press NEXT HAND to continue the duel."
 	_refresh()
 
 func _on_trump() -> void:
@@ -242,18 +249,20 @@ func _check_run_end(enemy_defeated: bool) -> void:
 
 func _on_next() -> void:
 	if run_over:
-		if player_hp <= 0 or encounter >= MAX_ENCOUNTERS:
-			encounter = 1
-			player_hp = STARTING_HP
-			enemy_hp = STARTING_HP
-			_start_encounter()
+		encounter = 1
+		player_hp = STARTING_HP
+		enemy_hp = STARTING_HP
+		_start_encounter()
 		return
-	if round_active or enemy_hp > 0:
+	if round_active:
 		return
-	encounter += 1
-	enemy_hp = STARTING_HP + (encounter - 1) * 6
-	player_hp = mini(STARTING_HP, player_hp + 5)
-	_start_encounter()
+	if enemy_hp <= 0:
+		encounter += 1
+		enemy_hp = STARTING_HP + (encounter - 1) * 6
+		player_hp = mini(STARTING_HP, player_hp + 5)
+		_start_encounter()
+	else:
+		_start_hand()
 
 func _refresh() -> void:
 	encounter_label.text = "DUEL %d / %d" % [encounter, MAX_ENCOUNTERS]
@@ -265,5 +274,5 @@ func _refresh() -> void:
 	hit_button.disabled = not round_active or run_over
 	stand_button.disabled = not round_active or run_over
 	trump_button.disabled = not round_active or run_over or not trump_ready
-	next_button.disabled = round_active or (enemy_hp > 0 and not run_over)
-	next_button.text = "RESTART RUN" if run_over else "NEXT DUEL"
+	next_button.disabled = round_active
+	next_button.text = "RESTART RUN" if run_over else ("NEXT DUEL" if enemy_hp <= 0 else "NEXT HAND")
