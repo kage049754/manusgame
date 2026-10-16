@@ -355,7 +355,11 @@ func _on_trump() -> void:
 			if _hand_total(test_hand) <= 21:
 				var old_card: Dictionary = player_hand[highest_index]
 				player_hand[highest_index] = replacement_card
-				status_text = "EXCHANGE: %s%s replaced by %s%s." % [old_card["rank"], old_card["suit"], replacement_card["rank"], replacement_card["suit"]]
+				if passive_select.get_item_text(passive_select.selected) == "Quick Reflex":
+					shield += 4
+					status_text = "CURSED REVERSAL combo: exchange succeeded and gained 4 shield."
+				else:
+					status_text = "EXCHANGE: %s%s replaced by %s%s." % [old_card["rank"], old_card["suit"], replacement_card["rank"], replacement_card["suit"]]
 			else:
 				status_text = "EXCHANGE failed safely: replacement would bust. Your hand is unchanged."
 		"Destroy":
@@ -369,13 +373,13 @@ func _on_trump() -> void:
 			status_text = "DESTROY: removed %s%s from your hand." % [removed["rank"], removed["suit"]]
 		"Executioner's Mark":
 			executioner_mark = true
-			status_text = "EXECUTIONER'S MARK: your next winning hand deals +6 damage."
+			status_text = "PERFECT EXECUTION combo: +10 damage on your next win against the boss." if passive_select.get_item_text(passive_select.selected) == "Boss Hunter" and encounter == MAX_ENCOUNTERS else "EXECUTIONER'S MARK: your next winning hand deals +6 damage."
 		"Cursed Hand":
 			cursed_enemy = true
 			status_text = "DEALER'S TRAP combo: challenger draws to %d." % _enemy_draw_target() if passive_select.get_item_text(passive_select.selected) == "Card Reader" else "CURSED HAND: challenger must draw to %d this hand." % _enemy_draw_target()
 		"Raise the Limit":
-			safe_limit = 23
-			status_text = "RAISE THE LIMIT: your hand can reach 23 before busting this hand."
+			safe_limit = 24 if passive_select.get_item_text(passive_select.selected) == "High Roller" else 23
+			status_text = "DEMON'S BARGAIN combo: your hand can reach 24 this hand." if safe_limit == 24 else "RAISE THE LIMIT: your hand can reach 23 before busting this hand."
 		"Rebirth":
 			if not rebirth_available:
 				status_text = "REBIRTH has already been spent this run."
@@ -388,11 +392,12 @@ func _on_trump() -> void:
 
 func _check_run_end(enemy_defeated: bool) -> void:
 	if player_hp <= 0 and rebirth_armed and rebirth_available:
-		player_hp = 8
+		var rebirth_hp := 12 if passive_select.get_item_text(passive_select.selected) == "Last Stand" else 8
+		player_hp = rebirth_hp
 		rebirth_armed = false
 		rebirth_available = false
 		round_active = false
-		status_text = "REBIRTH triggered: you return with 8 HP."
+		status_text = "SECOND CHANCE combo: Rebirth triggered at %d HP." % rebirth_hp if rebirth_hp == 12 else "REBIRTH triggered: you return with 8 HP."
 	elif player_hp <= 0:
 		run_over = true
 		round_active = false
