@@ -547,7 +547,7 @@ func _load_progress() -> bool:
 	if save.load("user://run_save.cfg") != OK:
 		return false
 	var save_version := int(save.get_value("meta", "version", 0))
-	if save_version != SAVE_VERSION:
+	if save_version != SAVE_VERSION or not save.has_section_key("run", "player_hand") or not save.has_section_key("run", "enemy_hand") or not save.has_section_key("run", "deck"):
 		return false
 	var saved_run := {"player_hp": save.get_value("run", "player_hp", STARTING_HP), "enemy_hp": save.get_value("run", "enemy_hp", STARTING_HP), "encounter": save.get_value("run", "encounter", 1), "shield": save.get_value("run", "shield", 0), "next_bonus_damage": save.get_value("run", "next_bonus_damage", 0), "next_start_shield": save.get_value("run", "next_start_shield", 0)}
 	var checked_run: Dictionary = Rules.validate_saved_run(saved_run, STARTING_HP, STARTING_HP + (MAX_ENCOUNTERS - 1) * 6, MAX_ENCOUNTERS)
@@ -582,7 +582,7 @@ func _load_progress() -> bool:
 	boss_phase_announced = bool(save.get_value("run", "boss_phase_announced", false))
 	second_wind_used = bool(save.get_value("run", "second_wind_used", false))
 	status_text = str(save.get_value("run", "status_text", "Run restored."))
-	if round_active and (not Rules.validate_saved_hand(player_hand) or not Rules.validate_saved_hand(enemy_hand)):
+	if not Rules.validate_saved_hand(player_hand) or not Rules.validate_saved_hand(enemy_hand):
 		player_hand.clear()
 		enemy_hand.clear()
 		return false
