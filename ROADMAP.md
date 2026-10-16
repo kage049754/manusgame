@@ -7,6 +7,7 @@ Source of truth for implementation progress. Update after every meaningful commi
 - [x] Fixed hand resolution so Raise the Limit uses its temporary threshold and simultaneous busts correctly count as a player bust; four new rules checks added (52 total).
 - [x] Restarting a run now clears pending damage, starting shield, and carried shield instead of leaking temporary rewards into the next run; reset state has an automated check (53 total).
 - [x] Saved defeats with 0 HP can now be restored as terminal defeat screens, while zero-HP saves without the terminal flag remain rejected; one new validation check added (54 total).
+- [x] Saved deck and both hands are validated as one card pool; duplicates across zones are rejected, with three new checks (59 total).
 - [x] Repository design contract and AI instructions written.
 - [x] Initial Godot project and playable prototype source added.
 - [x] Godot headless validation and main-scene smoke test passed in GitHub Actions.
@@ -217,3 +218,11 @@ Status: **Not started; blocked until offline release is stable**
 - Stand now checks the player's total against the current bust limit before drawing for the enemy. A restored or otherwise inconsistent hand above its limit receives the bust penalty rather than incorrectly resolving as a push or allowing the enemy to take a turn.
 - Code commit: `bd072114e57afe3270a5e3c985cf606578813367`.
 - Next: verify Godot validation and APK artifact, then continue stabilization.
+
+
+### Cross-zone saved-card integrity (implementation committed; CI pending)
+- Restore validates the remaining deck, player hand, and enemy hand together, not only each collection individually.
+- Duplicate rank/suit cards across deck and hands or between both hands are rejected; an exhausted deck with distinct hand cards remains valid.
+- Added three automated checks; expected suite size is 59.
+- Code commits: `7c474ce71ac47242379f2b835b3a60b406f605ae`, `c39a1db56ddccf4bc47a2f0015acdc674f6a0554`, `638d225e2f9d0aa393c788029ccd788d14081797`, `843711f452cf49815c61854d7e65130da526dbb7`.
+- Latest previously verified APK commit: `48fef1af647be9c39fe51d386c5d5af83dba13ee`; this new integrity change still requires fresh validation and APK verification.
