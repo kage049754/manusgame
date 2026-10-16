@@ -4,7 +4,7 @@
 **Engine:** Godot 4 | **Language:** GDScript | **Target:** Android APK  
 **Mode:** Offline-first single-player. Online PvP is a later phase, not part of the initial release.
 
-Dungeon Dealer is an original blackjack-inspired survival RPG. The player enters lethal card duels against increasingly dangerous opponents. Use standard blackjack decisions, active Trump Cards, passive abilities, and build-defining combos to survive a five-encounter run. The visual direction is a fixed card-table view, dark gothic atmosphere, black/crimson/ivory/gold palette, character portraits, and animated card reveals as art is added.
+Dungeon Dealer is an original blackjack-inspired survival RPG. The player enters lethal card duels against increasingly dangerous opponents. Use standard blackjack decisions, active Trump Cards, passive abilities, and build-defining combos to survive a five-encounter run. The visual direction is a fixed card-table view, dark gothic atmosphere, black/crimson/ivory/gold palette, character portraits, and animated card reveals as art is added. Player and enemy card rows wrap to fit narrow screens.
 
 ## Current progress
 
