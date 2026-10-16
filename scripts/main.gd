@@ -565,9 +565,7 @@ func _load_progress() -> bool:
 	var saved_deck: Variant = save.get_value("run", "deck", [])
 	var saved_player_hand: Variant = save.get_value("run", "player_hand", [])
 	var saved_enemy_hand: Variant = save.get_value("run", "enemy_hand", [])
-	if not Rules.validate_saved_deck(saved_deck):
-		return false
-	if not Rules.validate_saved_hand(saved_player_hand) or not Rules.validate_saved_hand(saved_enemy_hand):
+	if not Rules.validate_saved_cards(saved_deck, saved_player_hand, saved_enemy_hand):
 		return false
 	var saved_run := {"player_hp": save.get_value("run", "player_hp", STARTING_HP), "enemy_hp": save.get_value("run", "enemy_hp", STARTING_HP), "encounter": save.get_value("run", "encounter", 1), "shield": save.get_value("run", "shield", 0), "next_bonus_damage": save.get_value("run", "next_bonus_damage", 0), "next_start_shield": save.get_value("run", "next_start_shield", 0)}
 	var saved_run_over := bool(save.get_value("run", "run_over", false))
