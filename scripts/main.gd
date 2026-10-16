@@ -561,7 +561,8 @@ func _load_progress() -> bool:
 	if not Rules.validate_saved_hand(saved_player_hand) or not Rules.validate_saved_hand(saved_enemy_hand):
 		return false
 	var saved_run := {"player_hp": save.get_value("run", "player_hp", STARTING_HP), "enemy_hp": save.get_value("run", "enemy_hp", STARTING_HP), "encounter": save.get_value("run", "encounter", 1), "shield": save.get_value("run", "shield", 0), "next_bonus_damage": save.get_value("run", "next_bonus_damage", 0), "next_start_shield": save.get_value("run", "next_start_shield", 0)}
-	var checked_run: Dictionary = Rules.validate_saved_run(saved_run, STARTING_HP, STARTING_HP + (MAX_ENCOUNTERS - 1) * 6, MAX_ENCOUNTERS)
+	var saved_run_over := bool(save.get_value("run", "run_over", false))
+	var checked_run: Dictionary = Rules.validate_saved_run(saved_run, STARTING_HP, STARTING_HP + (MAX_ENCOUNTERS - 1) * 6, MAX_ENCOUNTERS, saved_run_over)
 	if not bool(checked_run["valid"]):
 		return false
 	player_hp = int(checked_run["player_hp"])
