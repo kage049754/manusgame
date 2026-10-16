@@ -112,3 +112,6 @@ static func validate_saved_deck(cards: Variant) -> bool:
 			return false
 		seen[key] = true
 	return true
+
+static func reset_run_resources() -> Dictionary:
+	return {"shield": 0, "next_bonus_damage": 0, "next_start_shield": 0}
