@@ -1,9 +1,9 @@
 extends Control
 
-const SUITS: Array[String] = ["♠", "♥", "♦", "♣"]
-const RANKS: Array[String] = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 const MAX_ENCOUNTERS := 5
 const STARTING_HP := 30
+
+const Rules = preload("res://scripts/blackjack_rules.gd")
 
 var deck: Array[Dictionary] = []
 var player_hand: Array[Dictionary] = []
@@ -134,10 +134,7 @@ func _start_hand() -> void:
 	_refresh()
 
 func _build_deck() -> void:
-	deck.clear()
-	for suit in SUITS:
-		for rank in RANKS:
-			deck.append({"suit": suit, "rank": rank})
+	deck = Rules.create_deck()
 	deck.shuffle()
 
 func _draw_card() -> Dictionary:
@@ -150,24 +147,10 @@ func _draw_to(hand: Array[Dictionary], count: int) -> void:
 		hand.append(_draw_card())
 
 func _card_value(card: Dictionary) -> int:
-	var rank: String = str(card.get("rank", "2"))
-	if rank == "A":
-		return 11
-	if rank in ["J", "Q", "K"]:
-		return 10
-	return int(rank)
+	return Rules.card_value(card)
 
 func _hand_total(hand: Array[Dictionary]) -> int:
-	var total := 0
-	var aces := 0
-	for card in hand:
-		total += _card_value(card)
-		if str(card.get("rank", "")) == "A":
-			aces += 1
-	while total > 21 and aces > 0:
-		total -= 10
-		aces -= 1
-	return total
+	return Rules.hand_total(hand)
 
 func _hand_text(hand: Array[Dictionary], hide_first: bool = false) -> String:
 	var parts: Array[String] = []
