@@ -37,6 +37,9 @@ static func is_bust(hand: Array[Dictionary]) -> bool:
 static func is_blackjack(hand: Array[Dictionary]) -> bool:
 	return hand.size() == 2 and hand_total(hand) == 21
 
+static func add_shield(existing_shield: int, gained_shield: int) -> int:
+	return maxi(0, existing_shield) + maxi(0, gained_shield)
+
 static func absorb_damage(raw_damage: int, available_shield: int) -> Dictionary:
 	var incoming := maxi(0, raw_damage)
 	var shield_pool := maxi(0, available_shield)
