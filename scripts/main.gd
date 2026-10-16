@@ -2,6 +2,7 @@ extends Control
 
 const MAX_ENCOUNTERS := 5
 const STARTING_HP := 30
+const SAVE_VERSION := 1
 
 const Rules = preload("res://scripts/blackjack_rules.gd")
 
@@ -487,6 +488,7 @@ func _on_claim_reward() -> void:
 
 func _save_progress() -> void:
 	var save := ConfigFile.new()
+	save.set_value("meta", "version", SAVE_VERSION)
 	save.set_value("run", "player_hp", player_hp)
 	save.set_value("run", "enemy_hp", enemy_hp)
 	save.set_value("run", "encounter", encounter)
@@ -503,6 +505,9 @@ func _save_progress() -> void:
 func _load_progress() -> void:
 	var save := ConfigFile.new()
 	if save.load("user://run_save.cfg") != OK:
+		return
+	var save_version := int(save.get_value("meta", "version", 0))
+	if save_version != SAVE_VERSION:
 		return
 	player_hp = int(save.get_value("run", "player_hp", STARTING_HP))
 	rebirth_available = bool(save.get_value("run", "rebirth_available", true))
