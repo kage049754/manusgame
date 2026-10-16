@@ -549,6 +549,9 @@ func _load_progress() -> bool:
 	var save_version := int(save.get_value("meta", "version", 0))
 	if save_version != SAVE_VERSION or not save.has_section_key("run", "player_hand") or not save.has_section_key("run", "enemy_hand") or not save.has_section_key("run", "deck"):
 		return false
+	var saved_deck: Variant = save.get_value("run", "deck", [])
+	if not Rules.validate_saved_deck(saved_deck):
+		return false
 	var saved_run := {"player_hp": save.get_value("run", "player_hp", STARTING_HP), "enemy_hp": save.get_value("run", "enemy_hp", STARTING_HP), "encounter": save.get_value("run", "encounter", 1), "shield": save.get_value("run", "shield", 0), "next_bonus_damage": save.get_value("run", "next_bonus_damage", 0), "next_start_shield": save.get_value("run", "next_start_shield", 0)}
 	var checked_run: Dictionary = Rules.validate_saved_run(saved_run, STARTING_HP, STARTING_HP + (MAX_ENCOUNTERS - 1) * 6, MAX_ENCOUNTERS)
 	if not bool(checked_run["valid"]):
@@ -563,9 +566,8 @@ func _load_progress() -> bool:
 	rebirth_armed = bool(save.get_value("run", "rebirth_armed", false))
 	reward_claimed = bool(save.get_value("run", "reward_claimed", false))
 	deck.clear()
-	for card in save.get_value("run", "deck", []):
-		if card is Dictionary and card.has("rank") and card.has("suit"):
-			deck.append(card)
+	for card in saved_deck:
+		deck.append(card)
 	player_hand.clear()
 	for card in save.get_value("run", "player_hand", []):
 		if card is Dictionary and card.has("rank") and card.has("suit"):
