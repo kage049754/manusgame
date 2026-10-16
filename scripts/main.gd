@@ -26,7 +26,10 @@ var status_label: Label
 var hit_button: Button
 var stand_button: Button
 var trump_button: Button
+var trump_select: OptionButton
 var next_button: Button
+var executioner_mark := false
+var cursed_enemy := false
 
 func _ready() -> void:
 	_build_ui()
@@ -83,7 +86,13 @@ func _build_ui() -> void:
 	stand_button = _button("STAND", Color("#67502d"))
 	stand_button.pressed.connect(_on_stand)
 	buttons.add_child(stand_button)
-	trump_button = _button("TRUMP: AEGIS", Color("#344e52"))
+	trump_select = OptionButton.new()
+	trump_select.custom_minimum_size = Vector2(180, 54)
+	trump_select.add_theme_font_size_override("font_size", 15)
+	for card_name in ["Aegis", "Perfect Draw", "Exchange", "Destroy", "Executioner's Mark", "Cursed Hand"]:
+		trump_select.add_item(card_name)
+	buttons.add_child(trump_select)
+	trump_button = _button("USE TRUMP", Color("#344e52"))
 	trump_button.pressed.connect(_on_trump)
 	buttons.add_child(trump_button)
 	next_button = _button("NEXT DUEL", Color("#60435e"))
@@ -126,6 +135,8 @@ func _start_hand() -> void:
 	round_active = true
 	shield = 0
 	trump_ready = true
+	executioner_mark = false
+	cursed_enemy = false
 	player_hand.clear()
 	enemy_hand.clear()
 	_draw_to(player_hand, 2)
@@ -184,7 +195,8 @@ func _on_stand() -> void:
 	if not round_active or run_over:
 		return
 	round_active = false
-	while _hand_total(enemy_hand) < 17:
+	var enemy_target := 19 if cursed_enemy else 17
+	while _hand_total(enemy_hand) < enemy_target:
 		enemy_hand.append(_draw_card())
 	var player_total := _hand_total(player_hand)
 	var enemy_total := _hand_total(enemy_hand)
@@ -193,6 +205,9 @@ func _on_stand() -> void:
 		status_text = "The challenger busts at %d. You deal 10 damage." % enemy_total
 	elif player_total > enemy_total:
 		var damage := 12 if player_total == 21 else 8
+		if executioner_mark:
+			damage += 6
+			executioner_mark = false
 		enemy_hp = maxi(0, enemy_hp - damage)
 		status_text = "You win the hand (%d to %d) and deal %d damage." % [player_total, enemy_total, damage]
 	elif player_total < enemy_total:
@@ -212,9 +227,61 @@ func _on_stand() -> void:
 func _on_trump() -> void:
 	if not round_active or run_over or not trump_ready:
 		return
+	var selected := trump_select.get_item_text(trump_select.selected)
+	match selected:
+		"Aegis":
+			shield += 8
+			status_text = "AEGIS: gain 8 shield against your next incoming damage."
+		"Perfect Draw":
+			var candidates: Array[Dictionary] = []
+			for _i in range(3):
+				candidates.append(_draw_card())
+			var chosen: Dictionary = candidates[0]
+			var best_total := 99
+			for candidate in candidates:
+				var candidate_hand: Array[Dictionary] = player_hand.duplicate()
+				candidate_hand.append(candidate)
+				var candidate_total := _hand_total(candidate_hand)
+				if candidate_total <= 21 and candidate_total < best_total:
+					chosen = candidate
+					best_total = candidate_total
+			if best_total == 99:
+				status_text = "PERFECT DRAW: no safe card found among three; no card added."
+			else:
+				player_hand.append(chosen)
+				status_text = "PERFECT DRAW: selected %s%s from three cards." % [chosen["rank"], chosen["suit"]]
+		"Exchange":
+			if player_hand.size() < 2:
+				return
+			var highest_index := 0
+			for i in range(1, player_hand.size()):
+				if _card_value(player_hand[i]) > _card_value(player_hand[highest_index]):
+					highest_index = i
+			var replacement_card := _draw_card()
+			var test_hand: Array[Dictionary] = player_hand.duplicate()
+			test_hand[highest_index] = replacement_card
+			if _hand_total(test_hand) <= 21:
+				var old_card: Dictionary = player_hand[highest_index]
+				player_hand[highest_index] = replacement_card
+				status_text = "EXCHANGE: %s%s replaced by %s%s." % [old_card["rank"], old_card["suit"], replacement_card["rank"], replacement_card["suit"]]
+			else:
+				status_text = "EXCHANGE failed safely: replacement would bust. Your hand is unchanged."
+		"Destroy":
+			if player_hand.size() <= 2:
+				return
+			var highest_index := 0
+			for i in range(1, player_hand.size()):
+				if _card_value(player_hand[i]) > _card_value(player_hand[highest_index]):
+					highest_index = i
+			var removed: Dictionary = player_hand.pop_at(highest_index)
+			status_text = "DESTROY: removed %s%s from your hand." % [removed["rank"], removed["suit"]]
+		"Executioner's Mark":
+			executioner_mark = true
+			status_text = "EXECUTIONER'S MARK: your next winning hand deals +6 damage."
+		"Cursed Hand":
+			cursed_enemy = true
+			status_text = "CURSED HAND: challenger must draw to 19 this hand."
 	trump_ready = false
-	shield += 8
-	status_text = "AEGIS activated: your next incoming damage is reduced by up to 8."
 	_refresh()
 
 func _check_run_end(enemy_defeated: bool) -> void:
@@ -257,5 +324,6 @@ func _refresh() -> void:
 	hit_button.disabled = not round_active or run_over
 	stand_button.disabled = not round_active or run_over
 	trump_button.disabled = not round_active or run_over or not trump_ready
+	trump_select.disabled = not round_active or run_over or not trump_ready
 	next_button.disabled = round_active
 	next_button.text = "RESTART RUN" if run_over else ("NEXT DUEL" if enemy_hp <= 0 else "NEXT HAND")
