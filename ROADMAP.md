@@ -51,9 +51,10 @@ Status: **Not started**
 - [x] Five encounters per run with escalating enemy HP, distinct enemy names, and scaling AI draw targets.
 - [x] Final boss encounter with higher draw target and increased bust punishment; additional unique boss mechanics still planned.
 - [x] Add version metadata to local ConfigFile saves and reject unsupported versions.
-- [x] Guard malformed health/encounter values during save recovery; full save corruption and force-close recovery tests remain open.
+- [x] Guard malformed health/encounter values and saved card data during recovery.
+- [x] Persist deck, both hands, active-hand state, Trump availability, hand modifiers, and combat status so force-close/relaunch can restore an interrupted hand (CI verification pending).
 - [ ] Run restart, unlocks, and progression.
-- [ ] Validate offline behavior after force close/relaunch.
+- [ ] Validate offline behavior after force close/relaunch on a physical Android device.
 
 ## Phase 4 — Presentation and Android
 Status: **Not started**
@@ -69,7 +70,8 @@ Status: **Not started**
 ## Phase 5 — Stabilization
 Status: **Not started**
 - [ ] Balance enemy AI, ability costs, damage, rewards, and run length.
-- [ ] Test deck exhaustion, Ace conversions, simultaneous defeat, save corruption, interrupted turns.
+- [x] Add five automated checks for valid/malformed saved interrupted hands; rules suite now has 42 checks (CI verified on commit `e32aa9aa9bf7073c4222ae8632440b27f8abe92b`).
+- [ ] Test deck exhaustion, Ace conversions, simultaneous defeat, save corruption, and physical-device interrupted-turn recovery.
 - [ ] Fix high-severity crashes and softlocks.
 - [ ] Update README with actually tested features and release instructions.
 
@@ -137,3 +139,10 @@ Status: **Not started; blocked until offline release is stable**
 - Current gameplay code commit `a127c525fad726f6a5004727ecbd4ebbecb52be8` passed Godot validation: https://github.com/kage049754/manusgame/actions/runs/38929155586
 - Android debug APK build and artifact upload passed: https://github.com/kage049754/manusgame/actions/runs/38929156007
 - Physical Android device testing and force-close recovery of an in-progress hand remain unverified.
+
+
+### Interrupted-hand save recovery (implementation in progress; device test pending)
+- Saves now include the current deck, player/enemy hands, active-hand flag, Trump readiness, hand modifiers, boss phase state, Second Wind state, and status message.
+- Startup restores saved card state rather than unconditionally starting a new hand; malformed or legacy saves without card arrays fall back to a fresh hand safely.
+- Validation checks saved cards against allowed rank/suit values. Five new checks bring the rules suite to 42, passed in GitHub Actions.
+- Final recovery changes are being validated and rebuilt; force-close/relaunch behavior on a physical Android device has not been tested.
