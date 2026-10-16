@@ -4,6 +4,7 @@ Source of truth for implementation progress. Update after every meaningful commi
 
 ## Current status
 - [x] Latest recovery fix preserves completed-duel victory/reward screens and terminal victory state across relaunch, rather than silently advancing to the next encounter.
+- [x] Fixed hand resolution so Raise the Limit uses its temporary threshold and simultaneous busts correctly count as a player bust; four new rules checks added (52 total).
 - [x] Repository design contract and AI instructions written.
 - [x] Initial Godot project and playable prototype source added.
 - [x] Godot headless validation and main-scene smoke test passed in GitHub Actions.
@@ -167,3 +168,11 @@ Status: **Not started; blocked until offline release is stable**
 - Encounter advancement now waits for the player to press **NEXT DUEL** after claiming a reward; a saved terminal victory remains visible instead of being immediately replaced by a fresh run.
 - Code commit: `c5da403276037aa0f0d7c583cbd030494d9943f5`.
 - Next: confirm Godot validation and Android APK artifact for this commit. Physical-device recovery testing remains outstanding.
+
+
+### Raised bust-limit combat correction (implementation committed; CI pending)
+- Hand resolution now accepts the active bust limit rather than hard-coding 21.
+- A player bust is resolved before an enemy bust, preventing a simultaneous bust from incorrectly awarding the player a win.
+- Added four automated checks for simultaneous busts, safe totals of 22/23 under Raise the Limit, and busting above 23. Expected rules suite: 52 checks.
+- Code commits: `f98711e8a4314591435730f1595d77d55563c35e`, `d198e8c23d369894094e2b80dab2e0480c3b1525`, `4a9b37a5b964f33681fd611af3023401d1258d30`.
+- Next: confirm CI and Android APK artifact for the latest commit, then continue with the next stabilization issue.
