@@ -572,6 +572,8 @@ func _load_progress() -> bool:
 	var checked_run: Dictionary = Rules.validate_saved_run(saved_run, STARTING_HP, STARTING_HP + (MAX_ENCOUNTERS - 1) * 6, MAX_ENCOUNTERS, saved_run_over)
 	if not bool(checked_run["valid"]):
 		return false
+	if not Rules.validate_saved_terminal_state(int(checked_run["player_hp"]), int(checked_run["enemy_hp"]), int(checked_run["encounter"]), MAX_ENCOUNTERS, saved_run_over):
+		return false
 	player_hp = int(checked_run["player_hp"])
 	enemy_hp = int(checked_run["enemy_hp"])
 	encounter = int(checked_run["encounter"])
