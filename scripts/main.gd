@@ -212,7 +212,7 @@ func _start_encounter() -> void:
 
 func _start_hand() -> void:
 	round_active = true
-	shield = next_start_shield
+	shield = Rules.add_shield(shield, next_start_shield)
 	next_start_shield = 0
 	trump_ready = true
 	safe_limit = 21
