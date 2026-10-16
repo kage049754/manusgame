@@ -71,8 +71,11 @@ func _initialize() -> void:
 	_check(not Rules.validate_saved_deck([{"rank":"Joker","suit":"♠"}]), "unknown saved deck rank is rejected", failures)
 	_check(not Rules.validate_saved_deck([{"rank":"A","suit":"stars"}]), "unknown saved deck suit is rejected", failures)
 	_check(not Rules.validate_saved_deck("not a deck"), "wrong saved deck type is rejected", failures)
+	_check(Rules.validate_saved_cards([{"rank":"2","suit":"♠"}], [{"rank":"A","suit":"♠"},{"rank":"10","suit":"♥"}], [{"rank":"3","suit":"♠"},{"rank":"4","suit":"♠"}]) == false, "duplicate card across deck and hand is rejected", failures)
+	_check(not Rules.validate_saved_cards([], [{"rank":"A","suit":"♠"},{"rank":"10","suit":"♥"}], [{"rank":"A","suit":"♠"},{"rank":"4","suit":"♠"}]), "duplicate card across player and enemy hands is rejected", failures)
+	_check(Rules.validate_saved_cards([], [{"rank":"A","suit":"♠"},{"rank":"10","suit":"♥"}], [{"rank":"3","suit":"♠"},{"rank":"4","suit":"♠"}]), "distinct cards across an exhausted deck and both hands are accepted", failures)
 	if failures.is_empty():
-		print("PASS: 56 blackjack, combat, boss, and save-validation checks")
+		print("PASS: 59 blackjack, combat, boss, and save-validation checks")
 		quit(0)
 	else:
 		for failure in failures:
