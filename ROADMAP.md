@@ -3,6 +3,7 @@
 Source of truth for implementation progress. Update after every meaningful commit. Status labels: **Not started**, **In progress**, **Implemented**, **Verified**. “Implemented” means code exists; “Verified” means a relevant test or build passed.
 
 ## Current status
+- [x] Latest recovery fix preserves completed-duel victory/reward screens and terminal victory state across relaunch, rather than silently advancing to the next encounter.
 - [x] Repository design contract and AI instructions written.
 - [x] Initial Godot project and playable prototype source added.
 - [x] Godot headless validation and main-scene smoke test passed in GitHub Actions.
@@ -159,3 +160,10 @@ Status: **Not started; blocked until offline release is stable**
 - Validate saved remaining-deck type, size, rank/suit values, and duplicate cards before restoring run state.
 - Added six rules checks for full/empty valid decks and malformed/duplicate deck entries; expected suite size is 48 after CI verification.
 - Invalid saved decks are rejected before saved run values are applied, allowing a clean fresh encounter rather than partially restoring corrupted card data.
+
+
+### Victory/reward recovery correction (implementation committed; CI pending)
+- Fixed interrupted-run loading so a saved defeated enemy remains on the victory/reward screen after app relaunch.
+- Encounter advancement now waits for the player to press **NEXT DUEL** after claiming a reward; a saved terminal victory remains visible instead of being immediately replaced by a fresh run.
+- Code commit: `c5da403276037aa0f0d7c583cbd030494d9943f5`.
+- Next: confirm Godot validation and Android APK artifact for this commit. Physical-device recovery testing remains outstanding.
