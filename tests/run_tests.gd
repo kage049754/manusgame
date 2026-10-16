@@ -51,8 +51,13 @@ func _initialize() -> void:
 	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 3, "next_bonus_damage": -1}, 30, 54, 5)["valid"], "negative saved bonus damage is rejected", failures)
 	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 3, "shield": 1000}, 30, 54, 5)["valid"], "implausible saved shield is rejected", failures)
 	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 3, "next_start_shield": -1}, 30, 54, 5)["valid"], "negative saved starting shield is rejected", failures)
+	_check(Rules.validate_saved_hand([{"rank": "A", "suit": "♠"}, {"rank": "10", "suit": "♥"}]), "interrupted hand with valid cards can be restored", failures)
+	_check(not Rules.validate_saved_hand([{"rank": "A", "suit": "♠"}]), "interrupted hand missing a card is rejected", failures)
+	_check(not Rules.validate_saved_hand([{"rank": "Joker", "suit": "♠"}, {"rank": "10", "suit": "♥"}]), "saved hand with unknown rank is rejected", failures)
+	_check(not Rules.validate_saved_hand([{"rank": "A", "suit": "stars"}, {"rank": "10", "suit": "♥"}]), "saved hand with unknown suit is rejected", failures)
+	_check(not Rules.validate_saved_hand("not a hand"), "saved hand with wrong data type is rejected", failures)
 	if failures.is_empty():
-		print("PASS: 37 blackjack, combat, boss, and save-validation checks")
+		print("PASS: 42 blackjack, combat, boss, and save-validation checks")
 		quit(0)
 	else:
 		for failure in failures:
