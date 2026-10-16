@@ -14,7 +14,7 @@ Source of truth for implementation progress. Update after every meaningful commi
 - [x] Verified Android debug APK artifact for the current playable prototype with card-panel UI (commit `34088cab24a2ffa4b3c097fc1a233917801db9b3`).
 - **Current phase:** Phase 4 — mobile presentation and stabilization in progress; core five-encounter run, rewards, eight Trump Cards, ten passives, six combos, and local persistence are implemented.
 - **Latest verified milestone:** Android debug APK artifact verified for responsive mobile layout commit `b955274a3e4dee6bcf8c67f45e0d361cd7c20ce8` (23,915,083 bytes; SHA-256 `a8688415d7784c8248029b3eef70b7442ebdcbf047f32ee497b73e7200764a63`). Godot validation and the 18-rule test suite passed.
-- **Latest code milestone:** Centralized next-action decisions and added six transition checks; added a final-boss half-health phase with a higher draw target, +2 incoming damage on boss wins, and an entry message. The expanded 28-check suite and APK build are pending CI.
+- **Latest verified milestone:** Final boss Double or Nothing phase is implemented and verified. At half health, The House draws to a higher target and deals +2 damage on wins; phase entry is announced once. Godot validation passed run `38922794359`; Android APK artifact passed run `38922794395` for code commit `ff3bbc8aa4e2af6ab5c789e95092332f6be40827` (23,916,741 bytes; SHA-256 `101ea68488afa30ea3a77d576bf8cf83c2667243452e6ef294d82213f1f11961`).
 
 ## Phase 0 — Foundation
 Status: **In progress**
@@ -110,7 +110,7 @@ Status: **Not started; blocked until offline release is stable**
 - Six transition tests passed in Godot validation run `38922382191`.
 - Android APK artifact for the same code commit passed build and upload verification in run `38922382326`.
 
-### Final boss phase (CI pending)
+### Final boss phase (Verified)
 - The House enters a Double or Nothing phase at half health: it draws to a higher target and deals +2 damage when it wins a hand.
 - Added a one-time phase-entry status message and four pure rules checks for phase boundaries.
-- Verify the 28-check suite and Android APK in CI; physical device testing remains outstanding.
+- The 28-check suite and Android APK build passed in CI. Physical device testing remains outstanding.
