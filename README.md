@@ -8,7 +8,7 @@ Dungeon Dealer is an original blackjack-inspired survival RPG. The player enters
 
 ## Current progress
 
-**Current phase: Phase 4 — mobile presentation and stabilization in progress.** The playable prototype includes a tested blackjack rules engine, eight Trump Cards, ten passive choices, three class choices, six combo synergies, versioned local run persistence, five named/scaling encounters, a final boss, and between-encounter reward choices. Saved victory, reward, and defeat screens are preserved across relaunch so progression waits for the player's choice. Restarting a run clears pending reward bonuses and shield resources. The current code commit has passed Godot validation and its Android debug APK artifact has been verified by GitHub Actions. This remains an early prototype, not a finished or device-tested release.
+**Current phase: Phase 4 — mobile presentation and stabilization in progress.** The playable prototype includes a tested blackjack rules engine, eight Trump Cards, ten passive choices, three class choices, six combo synergies, versioned local run persistence, five named/scaling encounters, a final boss, and between-encounter reward choices. Saved victory, reward, and defeat screens are preserved across relaunch so progression waits for the player's choice. Save recovery rejects duplicate cards across the deck/hands and contradictory terminal-state metadata. Restarting a run clears pending reward bonuses and shield resources. The current code commit has passed Godot validation and its Android debug APK artifact has been verified by GitHub Actions. This remains an early prototype, not a finished or device-tested release.
 
 ## Core loop
 1. Enter a duel against an enemy dealer or challenger.
