@@ -26,8 +26,13 @@ func _initialize() -> void:
 	_check(unshielded["damage"] == 7 and unshielded["shield"] == 0, "damage passes through without shield", failures)
 	var invalid_damage := Rules.absorb_damage(-3, -2)
 	_check(invalid_damage["damage"] == 0 and invalid_damage["shield"] == 0, "negative damage and shield are safely clamped", failures)
+	_check(Rules.resolve_hand_result(18, 23) == "enemy_bust", "enemy bust is resolved as player victory", failures)
+	_check(Rules.resolve_hand_result(20, 18) == "player_win", "higher player total wins the hand", failures)
+	_check(Rules.resolve_hand_result(17, 19) == "enemy_win", "higher enemy total wins the hand", failures)
+	_check(Rules.resolve_hand_result(19, 19) == "push", "equal totals resolve as a push", failures)
+	_check(Rules.resolve_hand_result(22, 18) == "player_bust", "player bust outcome is classified safely", failures)
 	if failures.is_empty():
-		print("PASS: 13 blackjack and combat rules checks")
+		print("PASS: 18 blackjack and combat rules checks")
 		quit(0)
 	else:
 		for failure in failures:
