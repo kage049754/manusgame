@@ -94,3 +94,8 @@ Status: **Not started; blocked until offline release is stable**
 - Added bounds checks for player HP, enemy HP, and encounter index before resuming a run.
 - Extracted shield absorption into the rules module and added tests for partial block, full block, no shield, and invalid negative inputs.
 - Godot validation passed and the Android APK artifact was verified for code commit `ae77c9c980062217293c111aeed1b6c27c6c9a50`.
+
+### Deterministic combat outcomes (CI pending)
+- Added a shared hand-outcome resolver and routed the stand action through it.
+- Added five automated outcome checks: enemy bust, player win, enemy win, push, and player bust.
+- Full UI-driven transition/restart tests remain open.
