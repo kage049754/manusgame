@@ -31,6 +31,9 @@ var next_button: Button
 var class_select: OptionButton
 var passive_select: OptionButton
 var second_wind_used := false
+var rebirth_available := true
+var rebirth_armed := false
+var safe_limit := 21
 var executioner_mark := false
 var cursed_enemy := false
 
@@ -112,7 +115,7 @@ func _build_ui() -> void:
 	trump_select = OptionButton.new()
 	trump_select.custom_minimum_size = Vector2(180, 54)
 	trump_select.add_theme_font_size_override("font_size", 15)
-	for card_name in ["Aegis", "Perfect Draw", "Exchange", "Destroy", "Executioner's Mark", "Cursed Hand"]:
+	for card_name in ["Aegis", "Perfect Draw", "Exchange", "Destroy", "Executioner's Mark", "Cursed Hand", "Raise the Limit", "Rebirth"]:
 		trump_select.add_item(card_name)
 	buttons.add_child(trump_select)
 	trump_button = _button("USE TRUMP", Color("#344e52"))
@@ -159,6 +162,7 @@ func _start_hand() -> void:
 	round_active = true
 	shield = 0
 	trump_ready = true
+	safe_limit = 21
 	executioner_mark = false
 	cursed_enemy = false
 	player_hand.clear()
@@ -202,7 +206,7 @@ func _on_hit() -> void:
 		return
 	player_hand.append(_draw_card())
 	var total := _hand_total(player_hand)
-	if total > 21:
+	if total > safe_limit:
 		round_active = false
 		var damage := 8
 		if class_select.get_item_text(class_select.selected) == "Knight" or passive_select.get_item_text(passive_select.selected) == "Steel Nerve":
@@ -326,11 +330,27 @@ func _on_trump() -> void:
 		"Cursed Hand":
 			cursed_enemy = true
 			status_text = "DEALER'S TRAP combo: challenger draws to 20." if passive_select.get_item_text(passive_select.selected) == "Card Reader" else "CURSED HAND: challenger must draw to 19 this hand."
+		"Raise the Limit":
+			safe_limit = 23
+			status_text = "RAISE THE LIMIT: your hand can reach 23 before busting this hand."
+		"Rebirth":
+			if not rebirth_available:
+				status_text = "REBIRTH has already been spent this run."
+				_refresh()
+				return
+			rebirth_armed = true
+			status_text = "REBIRTH armed: survive one otherwise-lethal hit with 8 HP."
 	trump_ready = false
 	_refresh()
 
 func _check_run_end(enemy_defeated: bool) -> void:
-	if player_hp <= 0:
+	if player_hp <= 0 and rebirth_armed and rebirth_available:
+		player_hp = 8
+		rebirth_armed = false
+		rebirth_available = false
+		round_active = false
+		status_text = "REBIRTH triggered: you return with 8 HP."
+	elif player_hp <= 0:
 		run_over = true
 		round_active = false
 		status_text = "DEFEAT. The table claims another soul. Restart to try again."
@@ -347,6 +367,8 @@ func _on_next() -> void:
 		encounter = 1
 		player_hp = STARTING_HP
 		enemy_hp = STARTING_HP
+		rebirth_available = true
+		rebirth_armed = false
 		_start_encounter()
 		return
 	if round_active:
@@ -367,6 +389,8 @@ func _save_progress() -> void:
 	save.set_value("run", "run_over", run_over)
 	save.set_value("run", "class_index", class_select.selected)
 	save.set_value("run", "passive_index", passive_select.selected)
+	save.set_value("run", "rebirth_available", rebirth_available)
+	save.set_value("run", "rebirth_armed", rebirth_armed)
 	save.save("user://run_save.cfg")
 
 func _load_progress() -> void:
@@ -374,6 +398,8 @@ func _load_progress() -> void:
 	if save.load("user://run_save.cfg") != OK:
 		return
 	player_hp = int(save.get_value("run", "player_hp", STARTING_HP))
+	rebirth_available = bool(save.get_value("run", "rebirth_available", true))
+	rebirth_armed = bool(save.get_value("run", "rebirth_armed", false))
 	enemy_hp = int(save.get_value("run", "enemy_hp", STARTING_HP))
 	encounter = int(save.get_value("run", "encounter", 1))
 	if bool(save.get_value("run", "run_over", false)) or player_hp <= 0 or encounter > MAX_ENCOUNTERS:
