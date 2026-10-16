@@ -40,7 +40,7 @@ Status: **Not started**
 - [x] Knight, Rogue, and Dealer class selection with gameplay effects.
 - [x] Implement eight active Trump Cards: Aegis, Perfect Draw, Exchange, Destroy, Executioner’s Mark, Cursed Hand, Raise the Limit, and Rebirth.
 - [x] Implement ten passive choices with effects: Steel Nerve, Second Wind, High Roller, Boss Hunter, Card Reader, Quick Reflex, Steady Hand, Collector’s Instinct, Shadow Dealer, and Last Stand.
-- [ ] Implement six combos with visible activation and limits (Unbreakable Fate, Dealer’s Trap, and Executioner’s Mark/Boss Hunter boss synergy have effects; three more remain and combo UI needs polish).
+- [x] Implement all six combo synergies with gameplay effects (Unbreakable Fate, Dealer’s Trap, Perfect Execution, Cursed Reversal, Second Chance, and Demon’s Bargain); improve combo feedback and balance through testing.
 - [x] Add between-encounter reward choice: Mend (+8 HP), Power (+3 damage), or Guard (+6 starting shield).
 - [ ] Add relics/equipment and class synergies.
 
