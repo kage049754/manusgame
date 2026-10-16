@@ -83,8 +83,8 @@ func _build_ui() -> void:
 	build_row.add_child(class_label)
 	class_select = OptionButton.new()
 	class_select.custom_minimum_size = Vector2(150, 44)
-	for class_name in ["Knight", "Rogue", "Dealer"]:
-		class_select.add_item(class_name)
+	for class_option in ["Knight", "Rogue", "Dealer"]:
+		class_select.add_item(class_option)
 	build_row.add_child(class_select)
 	var passive_label := _label("PASSIVE", 14, Color("#d7b56d"))
 	build_row.add_child(passive_label)
