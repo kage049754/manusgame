@@ -8,9 +8,10 @@ Source of truth for implementation progress. Update after every meaningful commi
 - [x] Godot headless validation and main-scene smoke test passed in GitHub Actions.
 - [x] Nine automated blackjack rules checks passed in GitHub Actions.
 - [x] First Android debug APK artifact produced and verified for commit `208fc4b667eb5e51e95e7bc578ab8af5ba5b885b` (artifact `DungeonDealer-debug-apk`, 23,903,011 bytes).
-- [ ] Re-verify APK artifact for the latest Trump Card implementation commit.
-- **Current phase:** Phase 1 — playable prototype; initial APK export verified.
-- **Next step:** Verify CI for the six-card Trump implementation, then expand automated tests and implement class/passive/combo systems.
+- [x] Verified Android debug APK artifact for the six-Trump/class/passive build (commit `617fdad23ccb9519cba69b5c4c76d4a4e47d6792`).
+- [ ] Verify the newest local-save and combo implementation APK.
+- **Current phase:** Phase 2 — combat abilities and build systems in progress; initial Android APK export verified.
+- **Next step:** Verify latest CI and APK for local saves/combo synergies, then implement remaining passives, combos, rewards, and encounter progression.
 
 ## Phase 0 — Foundation
 Status: **In progress**
@@ -34,10 +35,10 @@ Status: **In progress**
 
 ## Phase 2 — Classes, abilities, and builds
 Status: **Not started**
-- [ ] Knight, Rogue, and Dealer class selection.
-- [ ] Implement all eight active Trump Cards with explicit rules/costs (Aegis, Perfect Draw, Exchange, Destroy, Executioner’s Mark, and Cursed Hand are implemented in the prototype; two remain).
-- [ ] Implement ten passives as real mechanics, not placeholder labels.
-- [ ] Implement six combos with visible activation and limits.
+- [x] Knight, Rogue, and Dealer class selection with gameplay effects.
+- [ ] Implement all eight active Trump Cards with explicit rules/costs (Aegis, Perfect Draw, Exchange, Destroy, Executioner’s Mark, and Cursed Hand are implemented; two remain).
+- [ ] Implement ten passives as real mechanics, not placeholder labels (Steel Nerve, Second Wind, High Roller, Boss Hunter, and Card Reader currently have effects; five remain).
+- [ ] Implement six combos with visible activation and limits (Unbreakable Fate, Dealer’s Trap, and the Executioner’s Mark/Boss Hunter synergy currently have effects; remaining combos need implementation and UI clarity).
 - [ ] Add rewards and a choice after each encounter.
 - [ ] Add relics/equipment and class synergies.
 
@@ -45,7 +46,7 @@ Status: **Not started**
 Status: **Not started**
 - [ ] Five encounters per run with escalating enemy profiles.
 - [ ] One boss encounter and unique boss behavior.
-- [ ] Local save/load with versioned save data.
+- [ ] Local save/load with versioned save data (basic ConfigFile persistence is implemented; add versioning and recovery tests).
 - [ ] Run restart, unlocks, and progression.
 - [ ] Validate offline behavior after force close/relaunch.
 
@@ -79,4 +80,6 @@ Status: **Not started; blocked until offline release is stable**
 - Added initial Godot 4 blackjack table prototype with deck logic, hit/stand, enemy response, HP, and encounter progression.
 - Extracted blackjack scoring/deck rules into `scripts/blackjack_rules.gd` and added nine automated checks.
 - Added six selectable Trump Cards: Aegis, Perfect Draw, Exchange, Destroy, Executioner’s Mark, and Cursed Hand.
-- Initial Godot validation and Android APK artifact succeeded; latest Trump Card commit still requires its own CI verification.
+- Added Knight/Rogue/Dealer class selection and five functional passives.
+- Added three combo synergies and basic local run persistence.
+- Godot validation passed and an APK artifact was verified for commit `617fdad23ccb9519cba69b5c4c76d4a4e47d6792`; latest save/combo code is pending its own CI result.
