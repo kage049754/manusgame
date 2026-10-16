@@ -13,8 +13,8 @@ Source of truth for implementation progress. Update after every meaningful commi
 - [x] Verified APK artifact for all eight Trump Cards and ten passive choices (commit `a35dd7067865d61dd02a6387230612f4edc88d70`).
 - [x] Verified Android debug APK artifact for the current playable prototype with card-panel UI (commit `34088cab24a2ffa4b3c097fc1a233917801db9b3`).
 - **Current phase:** Phase 4 — mobile presentation and stabilization in progress; core five-encounter run, rewards, eight Trump Cards, ten passives, six combos, and local persistence are implemented.
-- **Latest milestone:** Local saves now carry a schema version; malformed health/encounter values are rejected and reset to a safe new run. Shield absorption is centralized in the rules module and has four additional automated checks. CI must verify this commit before this milestone is marked Verified.
-- **Next step:** Add automated combat-transition/restart tests, improve responsive mobile layout and boss feedback, then test the APK on a physical Android device.
+- **Latest verified milestone:** Android debug APK artifact verified for responsive mobile layout commit `b955274a3e4dee6bcf8c67f45e0d361cd7c20ce8` (23,915,083 bytes; SHA-256 `a8688415d7784c8248029b3eef70b7442ebdcbf047f32ee497b73e7200764a63`). Godot validation and the 18-rule test suite passed.
+- **Next step:** Verify the newly centralized next-action transition rules and 24-check suite in CI; then add boss-specific mechanics and clearer encounter feedback. Physical Android device testing remains outstanding.
 
 ## Phase 0 — Foundation
 Status: **In progress**
@@ -95,11 +95,16 @@ Status: **Not started; blocked until offline release is stable**
 - Extracted shield absorption into the rules module and added tests for partial block, full block, no shield, and invalid negative inputs.
 - Godot validation passed and the Android APK artifact was verified for code commit `ae77c9c980062217293c111aeed1b6c27c6c9a50`.
 
-### Deterministic combat outcomes (CI pending)
+### Deterministic combat outcomes (Verified)
 - Added a shared hand-outcome resolver and routed the stand action through it.
 - Added five automated outcome checks: enemy bust, player win, enemy win, push, and player bust.
-- Full UI-driven transition/restart tests remain open.
+- Godot validation and Android APK export passed for the current main-branch build.
 
-### Responsive layout work (CI pending)
+### Responsive layout work (CI verified; device test pending)
 - Added vertical scrolling and wrapping flow rows for narrow screens.
-- Verify with CI and test on a physical Android device.
+- Godot validation and Android APK export passed for commit `b955274a3e4dee6bcf8c67f45e0d361cd7c20ce8`.
+- Physical Android device testing is still required.
+
+### Combat transition safety (implementation in progress)
+- Centralized next-action decisions for restart, active-hand blocking, reward gating, encounter progression, and next-hand progression in the rules module.
+- Added six transition tests; pending CI verification.
