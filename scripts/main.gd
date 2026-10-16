@@ -99,6 +99,22 @@ func _build_ui() -> void:
 		passive_select.add_item(passive_name)
 	build_row.add_child(passive_select)
 
+	reward_row = HBoxContainer.new()
+	reward_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	reward_row.add_theme_constant_override("separation", 10)
+	root_box.add_child(reward_row)
+	var reward_label := _label("VICTORY REWARD", 14, Color("#d7b56d"))
+	reward_row.add_child(reward_label)
+	reward_select = OptionButton.new()
+	reward_select.custom_minimum_size = Vector2(200, 44)
+	for reward_name in ["Mend (+8 HP)", "Power (+3 damage)", "Guard (+6 shield)"]:
+		reward_select.add_item(reward_name)
+	reward_row.add_child(reward_select)
+	claim_reward_button = _button("CLAIM", Color("#3e6651"))
+	claim_reward_button.pressed.connect(_on_claim_reward)
+	reward_row.add_child(claim_reward_button)
+	reward_row.visible = false
+
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root_box.add_child(spacer)
@@ -155,13 +171,15 @@ func _button(value: String, color: Color) -> Button:
 
 func _start_encounter() -> void:
 	run_over = false
+	reward_claimed = false
 	second_wind_used = false
 	_build_deck()
 	_start_hand()
 
 func _start_hand() -> void:
 	round_active = true
-	shield = 0
+	shield = next_start_shield
+	next_start_shield = 0
 	trump_ready = true
 	safe_limit = 21
 	executioner_mark = false
@@ -244,12 +262,16 @@ func _on_stand() -> void:
 	var player_total := _hand_total(player_hand)
 	var enemy_total := _hand_total(enemy_hand)
 	if enemy_total > 21:
-		enemy_hp = maxi(0, enemy_hp - 10)
-		status_text = "The challenger busts at %d. You deal 10 damage." % enemy_total
+		var bust_damage := 10 + next_bonus_damage
+		next_bonus_damage = 0
+		enemy_hp = maxi(0, enemy_hp - bust_damage)
+		status_text = "The challenger busts at %d. You deal %d damage." % [enemy_total, bust_damage]
 	elif player_total > enemy_total:
 		var damage := 12 if player_total == 21 else 8
 		if class_select.get_item_text(class_select.selected) == "Rogue":
 			damage += 2
+		damage += next_bonus_damage
+		next_bonus_damage = 0
 		if passive_select.get_item_text(passive_select.selected) == "High Roller":
 			damage += 4
 		if passive_select.get_item_text(passive_select.selected) == "Last Stand" and player_hp <= 10:
@@ -395,12 +417,30 @@ func _on_next() -> void:
 	if round_active:
 		return
 	if enemy_hp <= 0:
+		if encounter < MAX_ENCOUNTERS and not reward_claimed:
+			return
 		encounter += 1
 		enemy_hp = STARTING_HP + (encounter - 1) * 6
 		player_hp = mini(STARTING_HP, player_hp + 5)
 		_start_encounter()
 	else:
 		_start_hand()
+
+func _on_claim_reward() -> void:
+	if round_active or run_over or enemy_hp > 0 or encounter >= MAX_ENCOUNTERS or reward_claimed:
+		return
+	match reward_select.get_item_text(reward_select.selected):
+		"Mend (+8 HP)":
+			player_hp = mini(STARTING_HP, player_hp + 8)
+			status_text = "Reward claimed: restored up to 8 HP."
+		"Power (+3 damage)":
+			next_bonus_damage += 3
+			status_text = "Reward claimed: +3 damage on your next successful hand."
+		"Guard (+6 shield)":
+			next_start_shield += 6
+			status_text = "Reward claimed: +6 shield at the start of your next hand."
+	reward_claimed = true
+	_refresh()
 
 func _save_progress() -> void:
 	var save := ConfigFile.new()
@@ -412,6 +452,9 @@ func _save_progress() -> void:
 	save.set_value("run", "passive_index", passive_select.selected)
 	save.set_value("run", "rebirth_available", rebirth_available)
 	save.set_value("run", "rebirth_armed", rebirth_armed)
+	save.set_value("run", "reward_claimed", reward_claimed)
+	save.set_value("run", "next_bonus_damage", next_bonus_damage)
+	save.set_value("run", "next_start_shield", next_start_shield)
 	save.save("user://run_save.cfg")
 
 func _load_progress() -> void:
@@ -421,6 +464,9 @@ func _load_progress() -> void:
 	player_hp = int(save.get_value("run", "player_hp", STARTING_HP))
 	rebirth_available = bool(save.get_value("run", "rebirth_available", true))
 	rebirth_armed = bool(save.get_value("run", "rebirth_armed", false))
+	reward_claimed = bool(save.get_value("run", "reward_claimed", false))
+	next_bonus_damage = int(save.get_value("run", "next_bonus_damage", 0))
+	next_start_shield = int(save.get_value("run", "next_start_shield", 0))
 	enemy_hp = int(save.get_value("run", "enemy_hp", STARTING_HP))
 	encounter = int(save.get_value("run", "encounter", 1))
 	if bool(save.get_value("run", "run_over", false)) or player_hp <= 0 or encounter > MAX_ENCOUNTERS:
@@ -455,7 +501,10 @@ func _refresh() -> void:
 	trump_select.disabled = not round_active or run_over or not trump_ready
 	class_select.disabled = round_active or run_over
 	passive_select.disabled = round_active or run_over
-	next_button.disabled = round_active
-	next_button.text = "RESTART RUN" if run_over else ("NEXT DUEL" if enemy_hp <= 0 else "NEXT HAND")
+	reward_row.visible = not round_active and enemy_hp <= 0 and encounter < MAX_ENCOUNTERS and not run_over
+	claim_reward_button.disabled = reward_claimed
+	reward_select.disabled = reward_claimed
+	next_button.disabled = round_active or (enemy_hp <= 0 and encounter < MAX_ENCOUNTERS and not reward_claimed)
+	next_button.text = "RESTART RUN" if run_over else ("CLAIM REWARD FIRST" if enemy_hp <= 0 and encounter < MAX_ENCOUNTERS and not reward_claimed else ("NEXT DUEL" if enemy_hp <= 0 else "NEXT HAND"))
 	if not round_active:
 		_save_progress()
