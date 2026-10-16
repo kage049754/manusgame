@@ -23,6 +23,8 @@ var encounter_label: Label
 var health_label: Label
 var enemy_hand_label: Label
 var player_hand_label: Label
+var enemy_cards_row: HBoxContainer
+var player_cards_row: HBoxContainer
 var status_label: Label
 var hit_button: Button
 var stand_button: Button
@@ -69,12 +71,20 @@ func _build_ui() -> void:
 	root_box.add_child(health_label)
 	root_box.add_child(HSeparator.new())
 
-	enemy_hand_label = _label("", 22, Color("#f0d7d7"))
+	enemy_hand_label = _label("", 18, Color("#f0d7d7"))
 	enemy_hand_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root_box.add_child(enemy_hand_label)
-	player_hand_label = _label("", 24, Color("#fff3d8"))
+	enemy_cards_row = HBoxContainer.new()
+	enemy_cards_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	enemy_cards_row.add_theme_constant_override("separation", 8)
+	root_box.add_child(enemy_cards_row)
+	player_hand_label = _label("", 18, Color("#fff3d8"))
 	player_hand_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root_box.add_child(player_hand_label)
+	player_cards_row = HBoxContainer.new()
+	player_cards_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	player_cards_row.add_theme_constant_override("separation", 8)
+	root_box.add_child(player_cards_row)
 	status_label = _label("", 16, Color("#d7b56d"))
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -209,6 +219,34 @@ func _card_value(card: Dictionary) -> int:
 
 func _hand_total(hand: Array[Dictionary]) -> int:
 	return Rules.hand_total(hand)
+
+func _populate_cards(row: HBoxContainer, hand: Array[Dictionary], hide_first: bool) -> void:
+	for child in row.get_children():
+		child.queue_free()
+	for i in range(hand.size()):
+		var hidden := hide_first and i == 0
+		var panel := PanelContainer.new()
+		panel.custom_minimum_size = Vector2(48, 58)
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color("#4c263c") if hidden else Color("#f3ead8")
+		style.border_color = Color("#c6a45e")
+		style.set_border_width_all(2)
+		style.set_corner_radius_all(6)
+		panel.add_theme_stylebox_override("panel", style)
+		row.add_child(panel)
+		var face := Label.new()
+		if hidden:
+			face.text = "✦\n✦"
+			face.add_theme_color_override("font_color", Color("#f3ead8"))
+		else:
+			var card: Dictionary = hand[i]
+			face.text = "%s\n%s" % [str(card["rank"]), str(card["suit"])]
+			var suit := str(card["suit"])
+			face.add_theme_color_override("font_color", Color("#a12d45") if suit in ["♥", "♦"] else Color("#17131b"))
+		face.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		face.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		face.add_theme_font_size_override("font_size", 18)
+		panel.add_child(face)
 
 func _hand_text(hand: Array[Dictionary], hide_first: bool = false) -> String:
 	var parts: Array[String] = []
@@ -499,8 +537,10 @@ func _refresh() -> void:
 	var enemy_total_text := "?" if round_active else str(_hand_total(enemy_hand))
 	if round_active and passive_select.get_item_text(passive_select.selected) == "Card Reader":
 		enemy_total_text = "Intent: draw to %d" % _enemy_draw_target()
-	enemy_hand_label.text = "CHALLENGER\n%s\nTotal: %s" % [_hand_text(enemy_hand, round_active), enemy_total_text]
-	player_hand_label.text = "YOUR HAND\n%s\nTotal: %d" % [_hand_text(player_hand), _hand_total(player_hand)]
+	enemy_hand_label.text = "CHALLENGER  •  Total: %s" % enemy_total_text
+	player_hand_label.text = "YOUR HAND  •  Total: %d" % _hand_total(player_hand)
+	_populate_cards(enemy_cards_row, enemy_hand, round_active)
+	_populate_cards(player_cards_row, player_hand, false)
 	status_label.text = status_text
 	hit_button.disabled = not round_active or run_over
 	stand_button.disabled = not round_active or run_over
