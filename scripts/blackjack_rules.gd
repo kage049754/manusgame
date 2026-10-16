@@ -76,14 +76,15 @@ static func resolve_next_action(encounter: int, max_encounters: int, enemy_hp: i
 static func is_boss_enraged(encounter: int, max_encounters: int, enemy_hp: int, boss_max_hp: int) -> bool:
 	return encounter == max_encounters and enemy_hp > 0 and enemy_hp <= int(boss_max_hp / 2)
 
-static func validate_saved_run(data: Dictionary, starting_hp: int, max_enemy_hp: int, max_encounters: int) -> Dictionary:
+static func validate_saved_run(data: Dictionary, starting_hp: int, max_enemy_hp: int, max_encounters: int, allow_zero_player_hp: bool = false) -> Dictionary:
 	var player_hp := int(data.get("player_hp", starting_hp))
+	var minimum_player_hp := 0 if allow_zero_player_hp else 1
 	var enemy_hp := int(data.get("enemy_hp", starting_hp))
 	var encounter := int(data.get("encounter", 1))
 	var shield := int(data.get("shield", 0))
 	var bonus := int(data.get("next_bonus_damage", 0))
 	var start_shield := int(data.get("next_start_shield", 0))
-	var valid := player_hp >= 1 and player_hp <= starting_hp and enemy_hp >= 0 and enemy_hp <= max_enemy_hp and encounter >= 1 and encounter <= max_encounters and shield >= 0 and shield <= 999 and bonus >= 0 and bonus <= 999 and start_shield >= 0 and start_shield <= 999
+	var valid := player_hp >= minimum_player_hp and player_hp <= starting_hp and enemy_hp >= 0 and enemy_hp <= max_enemy_hp and encounter >= 1 and encounter <= max_encounters and shield >= 0 and shield <= 999 and bonus >= 0 and bonus <= 999 and start_shield >= 0 and start_shield <= 999
 	return {"valid": valid, "player_hp": player_hp, "enemy_hp": enemy_hp, "encounter": encounter, "shield": shield, "next_bonus_damage": bonus, "next_start_shield": start_shield}
 
 static func validate_saved_hand(cards: Variant, minimum_cards: int = 2, maximum_cards: int = 24) -> bool:
