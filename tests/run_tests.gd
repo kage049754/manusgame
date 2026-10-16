@@ -37,8 +37,12 @@ func _initialize() -> void:
 	_check(Rules.resolve_next_action(2, 5, 0, false, false, true) == "next_encounter", "claimed reward allows next encounter", failures)
 	_check(Rules.resolve_next_action(5, 5, 0, false, false, true) == "finish_run", "final encounter does not advance beyond campaign", failures)
 	_check(Rules.resolve_next_action(3, 5, 18, false, false, true) == "next_hand", "living enemy advances to next hand", failures)
+	_check(not Rules.is_boss_enraged(4, 5, 20, 54), "boss phase does not affect earlier encounters", failures)
+	_check(not Rules.is_boss_enraged(5, 5, 28, 54), "boss phase stays dormant above half health", failures)
+	_check(Rules.is_boss_enraged(5, 5, 27, 54), "boss phase activates at half health", failures)
+	_check(not Rules.is_boss_enraged(5, 5, 0, 54), "defeated boss cannot remain enraged", failures)
 	if failures.is_empty():
-		print("PASS: 24 blackjack, combat, and transition checks")
+		print("PASS: 28 blackjack, combat, transition, and boss checks")
 		quit(0)
 	else:
 		for failure in failures:
