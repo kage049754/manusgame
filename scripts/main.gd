@@ -40,6 +40,7 @@ var rebirth_armed := false
 var safe_limit := 21
 var executioner_mark := false
 var cursed_enemy := false
+var boss_phase_announced := false
 
 func _ready() -> void:
 	_build_ui()
@@ -192,6 +193,7 @@ func _button(value: String, color: Color) -> Button:
 
 func _start_encounter() -> void:
 	run_over = false
+	boss_phase_announced = false
 	reward_claimed = false
 	second_wind_used = false
 	_build_deck()
@@ -295,6 +297,8 @@ func _on_hit() -> void:
 
 func _enemy_draw_target() -> int:
 	var target := 17 + int((encounter - 1) / 2)
+	if Rules.is_boss_enraged(encounter, MAX_ENCOUNTERS, enemy_hp, STARTING_HP + (MAX_ENCOUNTERS - 1) * 6):
+		target += 1
 	if cursed_enemy:
 		target += 1
 		if passive_select.get_item_text(passive_select.selected) == "Card Reader":
@@ -342,6 +346,8 @@ func _on_stand() -> void:
 		status_text = "You win the hand (%d to %d) and deal %d damage." % [player_total, enemy_total, damage]
 	elif hand_result == "enemy_win":
 		var damage := 8
+		if Rules.is_boss_enraged(encounter, MAX_ENCOUNTERS, enemy_hp, STARTING_HP + (MAX_ENCOUNTERS - 1) * 6):
+			damage += 2
 		if class_select.get_item_text(class_select.selected) == "Knight" or passive_select.get_item_text(passive_select.selected) == "Steel Nerve":
 			damage = maxi(0, damage - 2)
 		if passive_select.get_item_text(passive_select.selected) == "High Roller":
@@ -358,6 +364,9 @@ func _on_stand() -> void:
 	else:
 		status_text = "Push: both hands total %d. No damage." % player_total
 	_check_run_end(enemy_hp <= 0)
+	if not run_over and Rules.is_boss_enraged(encounter, MAX_ENCOUNTERS, enemy_hp, STARTING_HP + (MAX_ENCOUNTERS - 1) * 6) and not boss_phase_announced:
+		boss_phase_announced = true
+		status_text += " THE HOUSE enters DOUBLE OR NOTHING: it draws harder and deals +2 damage."
 	if not run_over and enemy_hp > 0 and player_hp > 0:
 		status_text += " Press NEXT HAND to continue the duel."
 	_refresh()
