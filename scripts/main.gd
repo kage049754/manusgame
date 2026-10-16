@@ -215,10 +215,6 @@ func _on_hit() -> void:
 			damage = maxi(0, damage - 1)
 		if passive_select.get_item_text(passive_select.selected) == "High Roller":
 			damage += 2
-		if passive_select.get_item_text(passive_select.selected) == "Quick Reflex":
-			damage = maxi(0, damage - 1)
-		if passive_select.get_item_text(passive_select.selected) == "Steady Hand" and _hand_total(player_hand) >= 18 and _hand_total(player_hand) <= 20:
-			damage = maxi(0, damage - 2)
 		var blocked: int = mini(shield, damage)
 		damage -= blocked
 		shield -= blocked
@@ -269,6 +265,10 @@ func _on_stand() -> void:
 			damage = maxi(0, damage - 2)
 		if passive_select.get_item_text(passive_select.selected) == "High Roller":
 			damage += 2
+		if passive_select.get_item_text(passive_select.selected) == "Quick Reflex":
+			damage = maxi(0, damage - 1)
+		if passive_select.get_item_text(passive_select.selected) == "Steady Hand" and player_total >= 18 and player_total <= 20:
+			damage = maxi(0, damage - 2)
 		var blocked: int = mini(shield, damage)
 		damage -= blocked
 		shield -= blocked
@@ -307,10 +307,10 @@ func _on_trump() -> void:
 					chosen = candidate
 					best_total = candidate_total
 			if best_total == 99:
-				status_text = "PERFECT DRAW: no safe card found among three; no card added."
+				status_text = "PERFECT DRAW: no safe card found among %d cards; no card added." % draw_count
 			else:
 				player_hand.append(chosen)
-				status_text = "PERFECT DRAW: selected %s%s from three cards." % [chosen["rank"], chosen["suit"]]
+				status_text = "PERFECT DRAW: selected %s%s from %d cards." % [chosen["rank"], chosen["suit"], draw_count]
 		"Exchange":
 			if player_hand.size() < 2:
 				return
