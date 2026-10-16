@@ -18,6 +18,8 @@ func _initialize() -> void:
 	_check(not Rules.is_bust([{"rank":"A","suit":"♠"},{"rank":"9","suit":"♥"}]), "legal soft total is not bust", failures)
 	_check(Rules.is_blackjack([{"rank":"A","suit":"♠"},{"rank":"K","suit":"♥"}]), "two-card blackjack detected", failures)
 	_check(not Rules.is_blackjack([{"rank":"7","suit":"♠"},{"rank":"7","suit":"♥"},{"rank":"7","suit":"♦"}]), "three-card 21 is not natural blackjack", failures)
+	_check(Rules.add_shield(3, 6) == 9, "new starting shield stacks with unused shield", failures)
+	_check(Rules.add_shield(-3, 6) == 6 and Rules.add_shield(3, -6) == 3, "shield stacking clamps invalid negative values", failures)
 	var shielded := Rules.absorb_damage(8, 5)
 	_check(shielded["damage"] == 3 and shielded["shield"] == 0 and shielded["absorbed"] == 5, "shield absorbs only its available amount", failures)
 	var fully_blocked := Rules.absorb_damage(4, 9)
@@ -70,7 +72,7 @@ func _initialize() -> void:
 	_check(not Rules.validate_saved_deck([{"rank":"A","suit":"stars"}]), "unknown saved deck suit is rejected", failures)
 	_check(not Rules.validate_saved_deck("not a deck"), "wrong saved deck type is rejected", failures)
 	if failures.is_empty():
-		print("PASS: 54 blackjack, combat, boss, and save-validation checks")
+		print("PASS: 56 blackjack, combat, boss, and save-validation checks")
 		quit(0)
 	else:
 		for failure in failures:
