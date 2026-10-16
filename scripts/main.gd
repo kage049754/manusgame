@@ -11,6 +11,7 @@ var enemy_hand: Array[Dictionary] = []
 var player_hp := STARTING_HP
 var enemy_hp := STARTING_HP
 var encounter := 1
+var enemy_names: Array[String] = ["THE PIT DEALER", "IRON JACK", "MIRROR WITCH", "BLOOD COUNT", "THE HOUSE — BOSS"]
 var round_active := false
 var run_over := false
 var shield := 0
@@ -208,7 +209,7 @@ func _on_hit() -> void:
 	var total := _hand_total(player_hand)
 	if total > safe_limit:
 		round_active = false
-		var damage := 8
+		var damage := 10 if encounter == MAX_ENCOUNTERS else 8
 		if class_select.get_item_text(class_select.selected) == "Knight" or passive_select.get_item_text(passive_select.selected) == "Steel Nerve":
 			damage = maxi(0, damage - 2)
 		if passive_select.get_item_text(passive_select.selected) == "Quick Reflex":
@@ -229,7 +230,11 @@ func _on_stand() -> void:
 	if not round_active or run_over:
 		return
 	round_active = false
-	var enemy_target := 20 if cursed_enemy and passive_select.get_item_text(passive_select.selected) == "Card Reader" else (19 if cursed_enemy else 17)
+	var enemy_target := 17 + int((encounter - 1) / 2)
+	if cursed_enemy:
+		enemy_target += 1
+	if passive_select.get_item_text(passive_select.selected) == "Card Reader" and cursed_enemy:
+		enemy_target += 1
 	while _hand_total(enemy_hand) < enemy_target:
 		enemy_hand.append(_draw_card())
 	var player_total := _hand_total(player_hand)
@@ -431,7 +436,7 @@ func _load_progress() -> void:
 	passive_select.select(clampi(int(save.get_value("run", "passive_index", 0)), 0, passive_select.item_count - 1))
 
 func _refresh() -> void:
-	encounter_label.text = "DUEL %d / %d" % [encounter, MAX_ENCOUNTERS]
+	encounter_label.text = "DUEL %d / %d  •  %s" % [encounter, MAX_ENCOUNTERS, enemy_names[clampi(encounter - 1, 0, enemy_names.size() - 1)]]
 	var shield_text := "  (SHIELD %d)" % shield if shield > 0 else ""
 	health_label.text = "YOU  %d HP%s     |     CHALLENGER  %d HP" % [player_hp, shield_text, enemy_hp]
 	var enemy_total_text := "?" if round_active else str(_hand_total(enemy_hand))
