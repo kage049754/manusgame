@@ -10,9 +10,10 @@ Source of truth for implementation progress. Update after every meaningful commi
 - [x] First Android debug APK artifact produced and verified for commit `208fc4b667eb5e51e95e7bc578ab8af5ba5b885b` (artifact `DungeonDealer-debug-apk`, 23,903,011 bytes).
 - [x] Verified Android debug APK artifact for the six-Trump/class/passive build (commit `617fdad23ccb9519cba69b5c4c76d4a4e47d6792`).
 - [x] Verified APK artifact for local save/load and three combo synergies (commit `c8276e9054cdc6a3c455efd3faa2a6521c423159`).
-- [ ] Verify APK artifact for all eight Trump Cards and ten passive choices.
-- **Current phase:** Phase 2 — core ability roster implemented; class/passive/combo balance and rewards remain.
-- **Next step:** Verify latest APK for all eight Trump Cards and ten passives, then implement reward choices, remaining combo effects, and encounter/boss progression.
+- [x] Verified APK artifact for all eight Trump Cards and ten passive choices (commit `a35dd7067865d61dd02a6387230612f4edc88d70`).
+- [ ] Verify the newest APK with named/scaling enemies and victory rewards.
+- **Current phase:** Phase 3 — five-encounter roguelite run and reward choices in progress.
+- **Next step:** Verify the reward/enemy APK, add executable tests for combat transitions and save recovery, then improve boss-specific behavior and finish the remaining combo synergies.
 
 ## Phase 0 — Foundation
 Status: **In progress**
@@ -40,13 +41,13 @@ Status: **Not started**
 - [x] Implement eight active Trump Cards: Aegis, Perfect Draw, Exchange, Destroy, Executioner’s Mark, Cursed Hand, Raise the Limit, and Rebirth.
 - [x] Implement ten passive choices with effects: Steel Nerve, Second Wind, High Roller, Boss Hunter, Card Reader, Quick Reflex, Steady Hand, Collector’s Instinct, Shadow Dealer, and Last Stand.
 - [ ] Implement six combos with visible activation and limits (Unbreakable Fate, Dealer’s Trap, and Executioner’s Mark/Boss Hunter boss synergy have effects; three more remain and combo UI needs polish).
-- [ ] Add rewards and a choice after each encounter.
+- [x] Add between-encounter reward choice: Mend (+8 HP), Power (+3 damage), or Guard (+6 starting shield).
 - [ ] Add relics/equipment and class synergies.
 
 ## Phase 3 — Roguelite campaign and saves
 Status: **Not started**
-- [ ] Five encounters per run with escalating enemy profiles.
-- [ ] One boss encounter and unique boss behavior.
+- [x] Five encounters per run with escalating enemy HP, distinct enemy names, and scaling AI draw targets.
+- [x] Final boss encounter with higher draw target and increased bust punishment; additional unique boss mechanics still planned.
 - [ ] Local save/load with versioned save data (basic ConfigFile persistence is implemented; add versioning and recovery tests).
 - [ ] Run restart, unlocks, and progression.
 - [ ] Validate offline behavior after force close/relaunch.
