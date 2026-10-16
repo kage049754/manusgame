@@ -226,15 +226,19 @@ func _on_hit() -> void:
 			status_text += " Press NEXT HAND to continue the duel."
 	_refresh()
 
+func _enemy_draw_target() -> int:
+	var target := 17 + int((encounter - 1) / 2)
+	if cursed_enemy:
+		target += 1
+		if passive_select.get_item_text(passive_select.selected) == "Card Reader":
+			target += 1
+	return target
+
 func _on_stand() -> void:
 	if not round_active or run_over:
 		return
 	round_active = false
-	var enemy_target := 17 + int((encounter - 1) / 2)
-	if cursed_enemy:
-		enemy_target += 1
-	if passive_select.get_item_text(passive_select.selected) == "Card Reader" and cursed_enemy:
-		enemy_target += 1
+	var enemy_target := _enemy_draw_target()
 	while _hand_total(enemy_hand) < enemy_target:
 		enemy_hand.append(_draw_card())
 	var player_total := _hand_total(player_hand)
@@ -346,7 +350,7 @@ func _on_trump() -> void:
 			status_text = "EXECUTIONER'S MARK: your next winning hand deals +6 damage."
 		"Cursed Hand":
 			cursed_enemy = true
-			status_text = "DEALER'S TRAP combo: challenger draws to 20." if passive_select.get_item_text(passive_select.selected) == "Card Reader" else "CURSED HAND: challenger must draw to 19 this hand."
+			status_text = "DEALER'S TRAP combo: challenger draws to %d." % _enemy_draw_target() if passive_select.get_item_text(passive_select.selected) == "Card Reader" else "CURSED HAND: challenger must draw to %d this hand." % _enemy_draw_target()
 		"Raise the Limit":
 			safe_limit = 23
 			status_text = "RAISE THE LIMIT: your hand can reach 23 before busting this hand."
@@ -441,7 +445,7 @@ func _refresh() -> void:
 	health_label.text = "YOU  %d HP%s     |     CHALLENGER  %d HP" % [player_hp, shield_text, enemy_hp]
 	var enemy_total_text := "?" if round_active else str(_hand_total(enemy_hand))
 	if round_active and passive_select.get_item_text(passive_select.selected) == "Card Reader":
-		enemy_total_text = "Intent: draw to %d" % (19 if cursed_enemy else 17)
+		enemy_total_text = "Intent: draw to %d" % _enemy_draw_target()
 	enemy_hand_label.text = "CHALLENGER\n%s\nTotal: %s" % [_hand_text(enemy_hand, round_active), enemy_total_text]
 	player_hand_label.text = "YOUR HAND\n%s\nTotal: %d" % [_hand_text(player_hand), _hand_total(player_hand)]
 	status_label.text = status_text
