@@ -233,7 +233,7 @@ func _card_value(card: Dictionary) -> int:
 func _hand_total(hand: Array[Dictionary]) -> int:
 	return Rules.hand_total(hand)
 
-func _populate_cards(row: HBoxContainer, hand: Array[Dictionary], hide_first: bool) -> void:
+func _populate_cards(row: HBoxContainer, hand: Array[Dictionary], hide_first: bool, emphasize_last: bool = true) -> void:
 	for child in row.get_children():
 		child.queue_free()
 	for i in range(hand.size()):
@@ -242,8 +242,8 @@ func _populate_cards(row: HBoxContainer, hand: Array[Dictionary], hide_first: bo
 		panel.custom_minimum_size = Vector2(48, 58)
 		var style := StyleBoxFlat.new()
 		style.bg_color = Color("#4c263c") if hidden else Color("#f3ead8")
-		style.border_color = Color("#c6a45e")
-		style.set_border_width_all(2)
+		style.border_color = Color("#f3c96b") if emphasize_last and i == hand.size() - 1 and not hidden else Color("#c6a45e")
+		style.set_border_width_all(3 if emphasize_last and i == hand.size() - 1 and not hidden else 2)
 		style.set_corner_radius_all(6)
 		panel.add_theme_stylebox_override("panel", style)
 		row.add_child(panel)
@@ -572,6 +572,14 @@ func _refresh() -> void:
 	_populate_cards(enemy_cards_row, enemy_hand, round_active)
 	_populate_cards(player_cards_row, player_hand, false)
 	status_label.text = status_text
+	if status_text.begins_with("BUST") or status_text.begins_with("DEFEAT") or status_text.begins_with("The challenger wins"):
+		status_label.add_theme_color_override("font_color", Color("#ef7c86"))
+	elif status_text.begins_with("You win") or status_text.begins_with("The challenger busts") or status_text.begins_with("Victory") or status_text.begins_with("THE HOUSE FALLS"):
+		status_label.add_theme_color_override("font_color", Color("#8ee0a2"))
+	elif status_text.begins_with("Push"):
+		status_label.add_theme_color_override("font_color", Color("#c8becb"))
+	else:
+		status_label.add_theme_color_override("font_color", Color("#d7b56d"))
 	hit_button.disabled = not round_active or run_over
 	stand_button.disabled = not round_active or run_over
 	trump_button.disabled = not round_active or run_over or not trump_ready
