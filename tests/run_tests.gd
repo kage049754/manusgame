@@ -31,6 +31,10 @@ func _initialize() -> void:
 	_check(Rules.resolve_hand_result(17, 19) == "enemy_win", "higher enemy total wins the hand", failures)
 	_check(Rules.resolve_hand_result(19, 19) == "push", "equal totals resolve as a push", failures)
 	_check(Rules.resolve_hand_result(22, 18) == "player_bust", "player bust outcome is classified safely", failures)
+	_check(Rules.resolve_hand_result(22, 23) == "player_bust", "player bust takes priority when both hands exceed 21", failures)
+	_check(Rules.resolve_hand_result(22, 18, false, 23) == "player_win", "Raise the Limit allows a safe 22 to win", failures)
+	_check(Rules.resolve_hand_result(23, 22, false, 23) == "player_win", "raised limit allows 23 without treating it as a bust", failures)
+	_check(Rules.resolve_hand_result(24, 18, false, 23) == "player_bust", "raised limit still busts totals above 23", failures)
 	_check(Rules.resolve_next_action(2, 5, 18, true, false, true) == "restart_run", "restart takes priority after a finished run", failures)
 	_check(Rules.resolve_next_action(2, 5, 18, false, true, true) == "blocked_active_hand", "cannot advance while a hand is active", failures)
 	_check(Rules.resolve_next_action(2, 5, 0, false, false, false) == "claim_reward", "defeated encounter requires reward before advancing", failures)
@@ -63,7 +67,7 @@ func _initialize() -> void:
 	_check(not Rules.validate_saved_deck([{"rank":"A","suit":"stars"}]), "unknown saved deck suit is rejected", failures)
 	_check(not Rules.validate_saved_deck("not a deck"), "wrong saved deck type is rejected", failures)
 	if failures.is_empty():
-		print("PASS: 48 blackjack, combat, boss, and save-validation checks")
+		print("PASS: 52 blackjack, combat, boss, and save-validation checks")
 		quit(0)
 	else:
 		for failure in failures:
