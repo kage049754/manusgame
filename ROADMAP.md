@@ -5,10 +5,12 @@ Source of truth for implementation progress. Update after every meaningful commi
 ## Current status
 - [x] Repository design contract and AI instructions written.
 - [x] Initial Godot project and playable prototype source added.
-- [x] Godot headless validation and main-scene smoke test passed in GitHub Actions (commit `160dc757fd969f2e7786f5d3b9bc362d7221be50`).
-- [ ] Android APK produced and artifact verified; latest export attempt is still running, and no APK artifact is confirmed.
-- **Current phase:** Phase 1 — playable prototype.
-- **Next step:** Confirm the Android export workflow result. If export fails, inspect the exact logs and repair the preset; once an APK artifact is verified, expand automated blackjack tests and implement classes/abilities.
+- [x] Godot headless validation and main-scene smoke test passed in GitHub Actions.
+- [x] Nine automated blackjack rules checks passed in GitHub Actions.
+- [x] First Android debug APK artifact produced and verified for commit `208fc4b667eb5e51e95e7bc578ab8af5ba5b885b` (artifact `DungeonDealer-debug-apk`, 23,903,011 bytes).
+- [ ] Re-verify APK artifact for the latest Trump Card implementation commit.
+- **Current phase:** Phase 1 — playable prototype; initial APK export verified.
+- **Next step:** Verify CI for the six-card Trump implementation, then expand automated tests and implement class/passive/combo systems.
 
 ## Phase 0 — Foundation
 Status: **In progress**
@@ -16,8 +18,8 @@ Status: **In progress**
 - [x] Record mandatory AI rules in AGENTS.md.
 - [x] Record design and long-term roadmap in README.md.
 - [x] Create Godot project structure and first table prototype.
-- [ ] Verify project opens/runs in Godot 4 headless mode.
-- [ ] Add a clean test harness for scoring and deck behavior.
+- [x] Verify project opens/runs in Godot 4 headless mode.
+- [x] Add automated test harness for scoring and deck behavior.
 
 ## Phase 1 — Playable blackjack duel
 Status: **In progress**
@@ -26,14 +28,14 @@ Status: **In progress**
 - [x] Add player/enemy health and turn resolution.
 - [x] Add basic offline enemy draw strategy.
 - [ ] Prevent repeated resolution/state-transition bugs.
-- [ ] Add automated tests for scoring, busts, deck uniqueness, and outcomes.
+- [x] Add automated tests for scoring, busts, deck uniqueness, and natural blackjack detection (9 checks).
 - [ ] Add touch-friendly card layout and responsive phone sizing.
 - [ ] Add enemy intent and clear combat result messages.
 
 ## Phase 2 — Classes, abilities, and builds
 Status: **Not started**
 - [ ] Knight, Rogue, and Dealer class selection.
-- [ ] Implement all eight active Trump Cards with explicit rules/costs.
+- [ ] Implement all eight active Trump Cards with explicit rules/costs (Aegis, Perfect Draw, Exchange, Destroy, Executioner’s Mark, and Cursed Hand are implemented in the prototype; two remain).
 - [ ] Implement ten passives as real mechanics, not placeholder labels.
 - [ ] Implement six combos with visible activation and limits.
 - [ ] Add rewards and a choice after each encounter.
@@ -75,4 +77,6 @@ Status: **Not started; blocked until offline release is stable**
 ### Initial repository setup
 - Added design, AI development contract, and phased roadmap.
 - Added initial Godot 4 blackjack table prototype with deck logic, hit/stand, enemy response, HP, and encounter progression.
-- Godot validation passed. Android export has not yet produced a verified artifact; export configuration is being debugged from workflow logs.
+- Extracted blackjack scoring/deck rules into `scripts/blackjack_rules.gd` and added nine automated checks.
+- Added six selectable Trump Cards: Aegis, Perfect Draw, Exchange, Destroy, Executioner’s Mark, and Cursed Hand.
+- Initial Godot validation and Android APK artifact succeeded; latest Trump Card commit still requires its own CI verification.
