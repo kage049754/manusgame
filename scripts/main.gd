@@ -588,26 +588,15 @@ func _load_progress() -> bool:
 	status_text = str(save.get_value("run", "status_text", "Run restored."))
 	class_select.select(clampi(int(save.get_value("run", "class_index", 0)), 0, class_select.item_count - 1))
 	passive_select.select(clampi(int(save.get_value("run", "passive_index", 0)), 0, passive_select.item_count - 1))
-	if bool(save.get_value("run", "run_over", false)) or player_hp <= 0 or encounter > MAX_ENCOUNTERS:
-		player_hp = STARTING_HP
-		enemy_hp = STARTING_HP
-		encounter = 1
-		run_over = false
+	if bool(save.get_value("run", "run_over", false)):
+		run_over = true
 		round_active = false
-		rebirth_available = true
-		rebirth_armed = false
-		return false
+		return true
 	if enemy_hp <= 0:
-		if encounter >= MAX_ENCOUNTERS:
-			player_hp = STARTING_HP
-			enemy_hp = STARTING_HP
-			encounter = 1
-		else:
-			encounter += 1
-			enemy_hp = STARTING_HP + (encounter - 1) * 6
-			player_hp = mini(STARTING_HP, player_hp + 5)
+		# Keep the victory screen and reward choice intact after an app restart.
+		# Progression only happens when the player explicitly chooses NEXT DUEL.
 		round_active = false
-		return false
+		return true
 	return true
 
 func _refresh() -> void:
