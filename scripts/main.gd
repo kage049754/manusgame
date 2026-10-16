@@ -28,6 +28,9 @@ var stand_button: Button
 var trump_button: Button
 var trump_select: OptionButton
 var next_button: Button
+var class_select: OptionButton
+var passive_select: OptionButton
+var second_wind_used := false
 var executioner_mark := false
 var cursed_enemy := false
 
@@ -71,6 +74,25 @@ func _build_ui() -> void:
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root_box.add_child(status_label)
+
+	var build_row := HBoxContainer.new()
+	build_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	build_row.add_theme_constant_override("separation", 10)
+	root_box.add_child(build_row)
+	var class_label := _label("CLASS", 14, Color("#d7b56d"))
+	build_row.add_child(class_label)
+	class_select = OptionButton.new()
+	class_select.custom_minimum_size = Vector2(150, 44)
+	for class_name in ["Knight", "Rogue", "Dealer"]:
+		class_select.add_item(class_name)
+	build_row.add_child(class_select)
+	var passive_label := _label("PASSIVE", 14, Color("#d7b56d"))
+	build_row.add_child(passive_label)
+	passive_select = OptionButton.new()
+	passive_select.custom_minimum_size = Vector2(180, 44)
+	for passive_name in ["Steel Nerve", "Second Wind", "High Roller", "Boss Hunter", "Card Reader"]:
+		passive_select.add_item(passive_name)
+	build_row.add_child(passive_select)
 
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -128,6 +150,7 @@ func _button(value: String, color: Color) -> Button:
 
 func _start_encounter() -> void:
 	run_over = false
+	second_wind_used = false
 	_build_deck()
 	_start_hand()
 
@@ -181,6 +204,10 @@ func _on_hit() -> void:
 	if total > 21:
 		round_active = false
 		var damage := 8
+		if class_select.get_item_text(class_select.selected) == "Knight" or passive_select.get_item_text(passive_select.selected) == "Steel Nerve":
+			damage = maxi(0, damage - 2)
+		if passive_select.get_item_text(passive_select.selected) == "High Roller":
+			damage += 2
 		var blocked: int = mini(shield, damage)
 		damage -= blocked
 		shield -= blocked
@@ -205,6 +232,15 @@ func _on_stand() -> void:
 		status_text = "The challenger busts at %d. You deal 10 damage." % enemy_total
 	elif player_total > enemy_total:
 		var damage := 12 if player_total == 21 else 8
+		if class_select.get_item_text(class_select.selected) == "Rogue":
+			damage += 2
+		if passive_select.get_item_text(passive_select.selected) == "High Roller":
+			damage += 4
+		if passive_select.get_item_text(passive_select.selected) == "Boss Hunter" and encounter == MAX_ENCOUNTERS:
+			damage += 4
+		if passive_select.get_item_text(passive_select.selected) == "Second Wind" and not second_wind_used:
+			player_hp = mini(STARTING_HP, player_hp + 2)
+			second_wind_used = true
 		if executioner_mark:
 			damage += 6
 			executioner_mark = false
@@ -212,6 +248,10 @@ func _on_stand() -> void:
 		status_text = "You win the hand (%d to %d) and deal %d damage." % [player_total, enemy_total, damage]
 	elif player_total < enemy_total:
 		var damage := 8
+		if class_select.get_item_text(class_select.selected) == "Knight" or passive_select.get_item_text(passive_select.selected) == "Steel Nerve":
+			damage = maxi(0, damage - 2)
+		if passive_select.get_item_text(passive_select.selected) == "High Roller":
+			damage += 2
 		var blocked: int = mini(shield, damage)
 		damage -= blocked
 		shield -= blocked
@@ -234,7 +274,8 @@ func _on_trump() -> void:
 			status_text = "AEGIS: gain 8 shield against your next incoming damage."
 		"Perfect Draw":
 			var candidates: Array[Dictionary] = []
-			for _i in range(3):
+			var draw_count := 4 if class_select.get_item_text(class_select.selected) == "Dealer" else 3
+			for _i in range(draw_count):
 				candidates.append(_draw_card())
 			var chosen: Dictionary = candidates[0]
 			var best_total := 99
@@ -325,5 +366,7 @@ func _refresh() -> void:
 	stand_button.disabled = not round_active or run_over
 	trump_button.disabled = not round_active or run_over or not trump_ready
 	trump_select.disabled = not round_active or run_over or not trump_ready
+	class_select.disabled = round_active or run_over
+	passive_select.disabled = round_active or run_over
 	next_button.disabled = round_active
 	next_button.text = "RESTART RUN" if run_over else ("NEXT DUEL" if enemy_hp <= 0 else "NEXT HAND")
