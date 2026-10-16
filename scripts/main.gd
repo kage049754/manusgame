@@ -36,6 +36,7 @@ var cursed_enemy := false
 
 func _ready() -> void:
 	_build_ui()
+	_load_progress()
 	_start_encounter()
 
 func _build_ui() -> void:
@@ -358,6 +359,39 @@ func _on_next() -> void:
 	else:
 		_start_hand()
 
+func _save_progress() -> void:
+	var save := ConfigFile.new()
+	save.set_value("run", "player_hp", player_hp)
+	save.set_value("run", "enemy_hp", enemy_hp)
+	save.set_value("run", "encounter", encounter)
+	save.set_value("run", "run_over", run_over)
+	save.set_value("run", "class_index", class_select.selected)
+	save.set_value("run", "passive_index", passive_select.selected)
+	save.save("user://run_save.cfg")
+
+func _load_progress() -> void:
+	var save := ConfigFile.new()
+	if save.load("user://run_save.cfg") != OK:
+		return
+	player_hp = int(save.get_value("run", "player_hp", STARTING_HP))
+	enemy_hp = int(save.get_value("run", "enemy_hp", STARTING_HP))
+	encounter = int(save.get_value("run", "encounter", 1))
+	if bool(save.get_value("run", "run_over", false)) or player_hp <= 0 or encounter > MAX_ENCOUNTERS:
+		player_hp = STARTING_HP
+		enemy_hp = STARTING_HP
+		encounter = 1
+	elif enemy_hp <= 0:
+		if encounter >= MAX_ENCOUNTERS:
+			player_hp = STARTING_HP
+			enemy_hp = STARTING_HP
+			encounter = 1
+		else:
+			encounter += 1
+			enemy_hp = STARTING_HP + (encounter - 1) * 6
+			player_hp = mini(STARTING_HP, player_hp + 5)
+	class_select.select(clampi(int(save.get_value("run", "class_index", 0)), 0, class_select.item_count - 1))
+	passive_select.select(clampi(int(save.get_value("run", "passive_index", 0)), 0, passive_select.item_count - 1))
+
 func _refresh() -> void:
 	encounter_label.text = "DUEL %d / %d" % [encounter, MAX_ENCOUNTERS]
 	var shield_text := "  (SHIELD %d)" % shield if shield > 0 else ""
@@ -376,3 +410,5 @@ func _refresh() -> void:
 	passive_select.disabled = round_active or run_over
 	next_button.disabled = round_active
 	next_button.text = "RESTART RUN" if run_over else ("NEXT DUEL" if enemy_hp <= 0 else "NEXT HAND")
+	if not round_active:
+		_save_progress()
