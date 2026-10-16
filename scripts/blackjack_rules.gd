@@ -83,3 +83,13 @@ static func validate_saved_run(data: Dictionary, starting_hp: int, max_enemy_hp:
 	var start_shield := int(data.get("next_start_shield", 0))
 	var valid := player_hp >= 1 and player_hp <= starting_hp and enemy_hp >= 0 and enemy_hp <= max_enemy_hp and encounter >= 1 and encounter <= max_encounters and shield >= 0 and shield <= 999 and bonus >= 0 and bonus <= 999 and start_shield >= 0 and start_shield <= 999
 	return {"valid": valid, "player_hp": player_hp, "enemy_hp": enemy_hp, "encounter": encounter, "shield": shield, "next_bonus_damage": bonus, "next_start_shield": start_shield}
+
+static func validate_saved_hand(cards: Variant, minimum_cards: int = 2, maximum_cards: int = 24) -> bool:
+	if not cards is Array or cards.size() < minimum_cards or cards.size() > maximum_cards:
+		return false
+	for card in cards:
+		if not card is Dictionary:
+			return false
+		if str(card.get("rank", "")) not in RANKS or str(card.get("suit", "")) not in SUITS:
+			return false
+	return true
