@@ -14,7 +14,7 @@ Source of truth for implementation progress. Update after every meaningful commi
 - [x] Verified Android debug APK artifact for the current playable prototype with card-panel UI (commit `34088cab24a2ffa4b3c097fc1a233917801db9b3`).
 - **Current phase:** Phase 4 — mobile presentation and stabilization in progress; core five-encounter run, rewards, eight Trump Cards, ten passives, six combos, and local persistence are implemented.
 - **Latest verified milestone:** Android debug APK artifact verified for responsive mobile layout commit `b955274a3e4dee6bcf8c67f45e0d361cd7c20ce8` (23,915,083 bytes; SHA-256 `a8688415d7784c8248029b3eef70b7442ebdcbf047f32ee497b73e7200764a63`). Godot validation and the 18-rule test suite passed.
-- **Next step:** Verify the newly centralized next-action transition rules and 24-check suite in CI; then add boss-specific mechanics and clearer encounter feedback. Physical Android device testing remains outstanding.
+- **Latest code milestone:** Centralized next-action decisions and added six transition checks; added a final-boss half-health phase with a higher draw target, +2 incoming damage on boss wins, and an entry message. The expanded 28-check suite and APK build are pending CI.
 
 ## Phase 0 — Foundation
 Status: **In progress**
@@ -105,6 +105,12 @@ Status: **Not started; blocked until offline release is stable**
 - Godot validation and Android APK export passed for commit `b955274a3e4dee6bcf8c67f45e0d361cd7c20ce8`.
 - Physical Android device testing is still required.
 
-### Combat transition safety (implementation in progress)
+### Combat transition safety (Verified)
 - Centralized next-action decisions for restart, active-hand blocking, reward gating, encounter progression, and next-hand progression in the rules module.
-- Added six transition tests; pending CI verification.
+- Six transition tests passed in Godot validation run `38922382191`.
+- Android APK artifact for the same code commit passed build and upload verification in run `38922382326`.
+
+### Final boss phase (CI pending)
+- The House enters a Double or Nothing phase at half health: it draws to a higher target and deals +2 damage when it wins a hand.
+- Added a one-time phase-entry status message and four pure rules checks for phase boundaries.
+- Verify the 28-check suite and Android APK in CI; physical device testing remains outstanding.
