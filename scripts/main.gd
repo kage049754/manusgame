@@ -222,7 +222,7 @@ func _on_stand() -> void:
 	if not round_active or run_over:
 		return
 	round_active = false
-	var enemy_target := 19 if cursed_enemy else 17
+	var enemy_target := 20 if cursed_enemy and passive_select.get_item_text(passive_select.selected) == "Card Reader" else (19 if cursed_enemy else 17)
 	while _hand_total(enemy_hand) < enemy_target:
 		enemy_hand.append(_draw_card())
 	var player_total := _hand_total(player_hand)
@@ -243,6 +243,8 @@ func _on_stand() -> void:
 			second_wind_used = true
 		if executioner_mark:
 			damage += 6
+			if passive_select.get_item_text(passive_select.selected) == "Boss Hunter" and encounter == MAX_ENCOUNTERS:
+				damage += 4
 			executioner_mark = false
 		enemy_hp = maxi(0, enemy_hp - damage)
 		status_text = "You win the hand (%d to %d) and deal %d damage." % [player_total, enemy_total, damage]
@@ -270,8 +272,9 @@ func _on_trump() -> void:
 	var selected := trump_select.get_item_text(trump_select.selected)
 	match selected:
 		"Aegis":
-			shield += 8
-			status_text = "AEGIS: gain 8 shield against your next incoming damage."
+			var shield_gain := 12 if passive_select.get_item_text(passive_select.selected) == "Steel Nerve" else 8
+			shield += shield_gain
+			status_text = "UNBREAKABLE FATE combo: gain %d shield." % shield_gain if shield_gain == 12 else "AEGIS: gain 8 shield against your next incoming damage."
 		"Perfect Draw":
 			var candidates: Array[Dictionary] = []
 			var draw_count := 4 if class_select.get_item_text(class_select.selected) == "Dealer" else 3
@@ -321,7 +324,7 @@ func _on_trump() -> void:
 			status_text = "EXECUTIONER'S MARK: your next winning hand deals +6 damage."
 		"Cursed Hand":
 			cursed_enemy = true
-			status_text = "CURSED HAND: challenger must draw to 19 this hand."
+			status_text = "DEALER'S TRAP combo: challenger draws to 20." if passive_select.get_item_text(passive_select.selected) == "Card Reader" else "CURSED HAND: challenger must draw to 19 this hand."
 	trump_ready = false
 	_refresh()
 
