@@ -20,7 +20,8 @@ Dungeon Dealer is an original blackjack-inspired survival RPG. The player enters
 
 ## Gameplay rules
 - Standard 52-card deck. Number cards count at face value; J/Q/K count as 10; Ace counts as 11 or 1 to avoid busting.
-- A total over 21 is a bust.
+- A total over 21 is normally a bust; **Raise the Limit** temporarily raises the player's bust threshold to 23 (or 24 with the High Roller combo).
+- If the player and enemy both bust in the same resolution, the player's bust takes priority.
 - Player and enemy have health. Losing a duel costs health; reaching zero ends the run.
 - Stand resolves the player's hand, then the enemy draws and resolves its hand.
 - Keep combat deterministic and rules-driven; UI code must not own blackjack calculations.
