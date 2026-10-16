@@ -323,7 +323,7 @@ func _on_stand() -> void:
 		enemy_hand.append(_draw_card())
 	var player_total := _hand_total(player_hand)
 	var enemy_total := _hand_total(enemy_hand)
-	var hand_result := Rules.resolve_hand_result(player_total, enemy_total)
+	var hand_result := Rules.resolve_hand_result(player_total, enemy_total, false, safe_limit)
 	if hand_result == "enemy_bust":
 		var bust_damage := 10 + next_bonus_damage
 		next_bonus_damage = 0
