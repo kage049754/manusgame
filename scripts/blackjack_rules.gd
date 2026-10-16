@@ -57,3 +57,16 @@ static func resolve_hand_result(player_total: int, enemy_total: int, enemy_buste
 	if player_total < enemy_total:
 		return "enemy_win"
 	return "push"
+
+static func resolve_next_action(encounter: int, max_encounters: int, enemy_hp: int, run_over: bool, round_active: bool, reward_claimed: bool) -> String:
+	if run_over:
+		return "restart_run"
+	if round_active:
+		return "blocked_active_hand"
+	if enemy_hp <= 0:
+		if encounter >= max_encounters:
+			return "finish_run"
+		if not reward_claimed:
+			return "claim_reward"
+		return "next_encounter"
+	return "next_hand"
