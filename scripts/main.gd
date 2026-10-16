@@ -300,12 +300,13 @@ func _on_stand() -> void:
 		enemy_hand.append(_draw_card())
 	var player_total := _hand_total(player_hand)
 	var enemy_total := _hand_total(enemy_hand)
-	if enemy_total > 21:
+	var hand_result := Rules.resolve_hand_result(player_total, enemy_total)
+	if hand_result == "enemy_bust":
 		var bust_damage := 10 + next_bonus_damage
 		next_bonus_damage = 0
 		enemy_hp = maxi(0, enemy_hp - bust_damage)
 		status_text = "The challenger busts at %d. You deal %d damage." % [enemy_total, bust_damage]
-	elif player_total > enemy_total:
+	elif hand_result == "player_win":
 		var damage := 12 if player_total == 21 else 8
 		if class_select.get_item_text(class_select.selected) == "Rogue":
 			damage += 2
@@ -329,7 +330,7 @@ func _on_stand() -> void:
 			executioner_mark = false
 		enemy_hp = maxi(0, enemy_hp - damage)
 		status_text = "You win the hand (%d to %d) and deal %d damage." % [player_total, enemy_total, damage]
-	elif player_total < enemy_total:
+	elif hand_result == "enemy_win":
 		var damage := 8
 		if class_select.get_item_text(class_select.selected) == "Knight" or passive_select.get_item_text(passive_select.selected) == "Steel Nerve":
 			damage = maxi(0, damage - 2)
