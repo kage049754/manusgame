@@ -50,8 +50,11 @@ var boss_phase_announced := false
 
 func _ready() -> void:
 	_build_ui()
-	_load_progress()
-	_start_encounter()
+	var restored := _load_progress()
+	if restored:
+		_refresh()
+	else:
+		_start_encounter()
 
 func _build_ui() -> void:
 	var background := ColorRect.new()
@@ -526,19 +529,30 @@ func _save_progress() -> void:
 	save.set_value("run", "reward_claimed", reward_claimed)
 	save.set_value("run", "next_bonus_damage", next_bonus_damage)
 	save.set_value("run", "next_start_shield", next_start_shield)
+	save.set_value("run", "deck", deck)
+	save.set_value("run", "player_hand", player_hand)
+	save.set_value("run", "enemy_hand", enemy_hand)
+	save.set_value("run", "round_active", round_active)
+	save.set_value("run", "trump_ready", trump_ready)
+	save.set_value("run", "safe_limit", safe_limit)
+	save.set_value("run", "executioner_mark", executioner_mark)
+	save.set_value("run", "cursed_enemy", cursed_enemy)
+	save.set_value("run", "boss_phase_announced", boss_phase_announced)
+	save.set_value("run", "second_wind_used", second_wind_used)
+	save.set_value("run", "status_text", status_text)
 	save.save("user://run_save.cfg")
 
-func _load_progress() -> void:
+func _load_progress() -> bool:
 	var save := ConfigFile.new()
 	if save.load("user://run_save.cfg") != OK:
-		return
+		return false
 	var save_version := int(save.get_value("meta", "version", 0))
 	if save_version != SAVE_VERSION:
-		return
+		return false
 	var saved_run := {"player_hp": save.get_value("run", "player_hp", STARTING_HP), "enemy_hp": save.get_value("run", "enemy_hp", STARTING_HP), "encounter": save.get_value("run", "encounter", 1), "shield": save.get_value("run", "shield", 0), "next_bonus_damage": save.get_value("run", "next_bonus_damage", 0), "next_start_shield": save.get_value("run", "next_start_shield", 0)}
 	var checked_run: Dictionary = Rules.validate_saved_run(saved_run, STARTING_HP, STARTING_HP + (MAX_ENCOUNTERS - 1) * 6, MAX_ENCOUNTERS)
 	if not bool(checked_run["valid"]):
-		return
+		return false
 	player_hp = int(checked_run["player_hp"])
 	enemy_hp = int(checked_run["enemy_hp"])
 	encounter = int(checked_run["encounter"])
@@ -548,6 +562,31 @@ func _load_progress() -> void:
 	rebirth_available = bool(save.get_value("run", "rebirth_available", true))
 	rebirth_armed = bool(save.get_value("run", "rebirth_armed", false))
 	reward_claimed = bool(save.get_value("run", "reward_claimed", false))
+	deck.clear()
+	for card in save.get_value("run", "deck", []):
+		if card is Dictionary and card.has("rank") and card.has("suit"):
+			deck.append(card)
+	player_hand.clear()
+	for card in save.get_value("run", "player_hand", []):
+		if card is Dictionary and card.has("rank") and card.has("suit"):
+			player_hand.append(card)
+	enemy_hand.clear()
+	for card in save.get_value("run", "enemy_hand", []):
+		if card is Dictionary and card.has("rank") and card.has("suit"):
+			enemy_hand.append(card)
+	round_active = bool(save.get_value("run", "round_active", false))
+	trump_ready = bool(save.get_value("run", "trump_ready", true))
+	safe_limit = clampi(int(save.get_value("run", "safe_limit", 21)), 21, 24)
+	executioner_mark = bool(save.get_value("run", "executioner_mark", false))
+	cursed_enemy = bool(save.get_value("run", "cursed_enemy", false))
+	boss_phase_announced = bool(save.get_value("run", "boss_phase_announced", false))
+	second_wind_used = bool(save.get_value("run", "second_wind_used", false))
+	status_text = str(save.get_value("run", "status_text", "Run restored."))
+	if round_active and (player_hand.size() < 2 or enemy_hand.size() < 2):
+		round_active = false
+		player_hand.clear()
+		enemy_hand.clear()
+		status_text = "Saved hand was incomplete. Starting a fresh hand safely."
 	if bool(save.get_value("run", "run_over", false)) or player_hp <= 0 or encounter > MAX_ENCOUNTERS:
 		player_hp = STARTING_HP
 		enemy_hp = STARTING_HP
@@ -565,6 +604,7 @@ func _load_progress() -> void:
 			player_hp = mini(STARTING_HP, player_hp + 5)
 	class_select.select(clampi(int(save.get_value("run", "class_index", 0)), 0, class_select.item_count - 1))
 	passive_select.select(clampi(int(save.get_value("run", "passive_index", 0)), 0, passive_select.item_count - 1))
+	return true
 
 func _refresh() -> void:
 	encounter_label.text = "DUEL %d / %d  •  %s" % [encounter, MAX_ENCOUNTERS, enemy_names[clampi(encounter - 1, 0, enemy_names.size() - 1)]]
@@ -597,5 +637,4 @@ func _refresh() -> void:
 	reward_select.disabled = reward_claimed
 	next_button.disabled = round_active or (enemy_hp <= 0 and encounter < MAX_ENCOUNTERS and not reward_claimed)
 	next_button.text = "RESTART RUN" if run_over else ("CLAIM REWARD FIRST" if enemy_hp <= 0 and encounter < MAX_ENCOUNTERS and not reward_claimed else ("NEXT DUEL" if enemy_hp <= 0 else "NEXT HAND"))
-	if not round_active and not (enemy_hp <= 0 and encounter < MAX_ENCOUNTERS and not reward_claimed):
-		_save_progress()
+	_save_progress()
