@@ -1,0 +1,30 @@
+name: Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build Android debug APK with Godot export environment
+        run: |
+          mkdir -p build
+          docker run --rm \
+            -v "$PWD:/project" \
+            -w /project \
+            barichello/godot-ci:4.3 \
+            godot --headless --path . --export-debug "Android" build/DungeonDealer.apk
+      - name: Verify APK exists
+        run: test -s build/DungeonDealer.apk
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: DungeonDealer-debug-apk
+          path: build/DungeonDealer.apk
+          if-no-files-found: error
+          retention-days: 14
