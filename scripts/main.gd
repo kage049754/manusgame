@@ -485,6 +485,10 @@ func _on_next() -> void:
 			encounter = 1
 			player_hp = STARTING_HP
 			enemy_hp = STARTING_HP
+			var fresh_resources: Dictionary = Rules.reset_run_resources()
+			shield = int(fresh_resources["shield"])
+			next_bonus_damage = int(fresh_resources["next_bonus_damage"])
+			next_start_shield = int(fresh_resources["next_start_shield"])
 			rebirth_available = true
 			rebirth_armed = false
 			_start_encounter()
