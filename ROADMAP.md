@@ -35,7 +35,7 @@ Status: **In progress**
 - [x] Implement Ace-aware scoring, face-card values, hit, stand, and bust.
 - [x] Add player/enemy health and turn resolution.
 - [x] Add basic offline enemy draw strategy.
-- [ ] Prevent repeated resolution/state-transition bugs.
+- [x] Guard Stand against a restored or malformed hand already above its active bust limit; it now applies the bust penalty before allowing an enemy turn (CI verification pending).
 - [x] Add automated tests for scoring, busts, deck uniqueness, and natural blackjack detection (9 checks).
 - [x] Add four automated shield-absorption checks and use the shared helper for incoming damage.
 - [ ] Add touch-friendly card layout and responsive phone sizing.
@@ -210,3 +210,10 @@ Status: **Not started; blocked until offline release is stable**
 - Added two rules checks for stacking and negative-input clamping; expected rules suite size is 56.
 - Code commits: `92d10cc6eaedb181549c35894b127d75ce8fb552`, `d8f90d5d9d512ae6238d237db7aab28b34a5e803`, `797ffcf72c6f848dc1aa0b0d7a0b7913a2f31bdb`.
 - Next: verify latest CI and Android APK artifact, then continue stabilization.
+
+
+### Stand-after-bust guard (implementation committed; CI pending)
+- Extracted bust damage into one shared path for Hit and Stand.
+- Stand now checks the player's total against the current bust limit before drawing for the enemy. A restored or otherwise inconsistent hand above its limit receives the bust penalty rather than incorrectly resolving as a push or allowing the enemy to take a turn.
+- Code commit: `bd072114e57afe3270a5e3c985cf606578813367`.
+- Next: verify Godot validation and APK artifact, then continue stabilization.
