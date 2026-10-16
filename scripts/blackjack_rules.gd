@@ -79,6 +79,15 @@ static func resolve_next_action(encounter: int, max_encounters: int, enemy_hp: i
 static func is_boss_enraged(encounter: int, max_encounters: int, enemy_hp: int, boss_max_hp: int) -> bool:
 	return encounter == max_encounters and enemy_hp > 0 and enemy_hp <= int(boss_max_hp / 2)
 
+static func validate_saved_terminal_state(player_hp: int, enemy_hp: int, encounter: int, max_encounters: int, run_over: bool) -> bool:
+	if player_hp <= 0:
+		return run_over
+	if run_over:
+		return encounter == max_encounters and enemy_hp <= 0
+	if encounter == max_encounters and enemy_hp <= 0:
+		return false
+	return true
+
 static func validate_saved_run(data: Dictionary, starting_hp: int, max_enemy_hp: int, max_encounters: int, allow_zero_player_hp: bool = false) -> Dictionary:
 	var player_hp := int(data.get("player_hp", starting_hp))
 	var minimum_player_hp := 0 if allow_zero_player_hp else 1
