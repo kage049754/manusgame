@@ -8,6 +8,7 @@ Source of truth for implementation progress. Update after every meaningful commi
 - [x] Restarting a run now clears pending damage, starting shield, and carried shield instead of leaking temporary rewards into the next run; reset state has an automated check (53 total).
 - [x] Saved defeats with 0 HP can now be restored as terminal defeat screens, while zero-HP saves without the terminal flag remain rejected; one new validation check added (54 total).
 - [x] Saved deck and both hands are validated as one card pool; duplicates across zones are rejected, with three new checks (59 total).
+- [x] Terminal save flags are now checked against HP, encounter, and enemy defeat state; six checks cover valid defeat/victory and inconsistent terminal saves (65 total).
 - [x] Repository design contract and AI instructions written.
 - [x] Initial Godot project and playable prototype source added.
 - [x] Godot headless validation and main-scene smoke test passed in GitHub Actions.
@@ -226,3 +227,11 @@ Status: **Not started; blocked until offline release is stable**
 - Added three automated checks; expected suite size is 59.
 - Code commits: `7c474ce71ac47242379f2b835b3a60b406f605ae`, `c39a1db56ddccf4bc47a2f0015acdc674f6a0554`, `638d225e2f9d0aa393c788029ccd788d14081797`, `843711f452cf49815c61854d7e65130da526dbb7`.
 - Latest previously verified APK commit: `48fef1af647be9c39fe51d386c5d5af83dba13ee`; this new integrity change still requires fresh validation and APK verification.
+
+
+### Terminal-state save consistency (implementation committed; CI pending)
+- Save restoration now rejects contradictory terminal metadata: zero HP without a defeat flag, a run-over flag while both sides are alive, and a final boss defeat without the run-over flag.
+- Valid intermediate victory screens, terminal defeat screens, and final victory screens remain resumable.
+- Added six checks; expected suite size is 65.
+- Code commits: `459d1fa8f6d6ce67599b70c561a4a92382f3b281`, `f8471f84853cf06cf493c172b280aa5e5b3660d2`, `b3587e11d7ecf749cc80447ab8b943c5c3c105d4`.
+- Latest cross-zone integrity validation and APK were successful on commit `4b030e791c599a4b6a403b21bb802ff91de28b4c`; this terminal-state change needs its own validation and APK verification.
