@@ -359,7 +359,10 @@ func _refresh() -> void:
 	encounter_label.text = "DUEL %d / %d" % [encounter, MAX_ENCOUNTERS]
 	var shield_text := "  (SHIELD %d)" % shield if shield > 0 else ""
 	health_label.text = "YOU  %d HP%s     |     CHALLENGER  %d HP" % [player_hp, shield_text, enemy_hp]
-	enemy_hand_label.text = "CHALLENGER\n%s\nTotal: %s" % [_hand_text(enemy_hand, round_active), "?" if round_active else str(_hand_total(enemy_hand))]
+	var enemy_total_text := "?" if round_active else str(_hand_total(enemy_hand))
+	if round_active and passive_select.get_item_text(passive_select.selected) == "Card Reader":
+		enemy_total_text = "Intent: draw to %d" % (19 if cursed_enemy else 17)
+	enemy_hand_label.text = "CHALLENGER\n%s\nTotal: %s" % [_hand_text(enemy_hand, round_active), enemy_total_text]
 	player_hand_label.text = "YOUR HAND\n%s\nTotal: %d" % [_hand_text(player_hand), _hand_total(player_hand)]
 	status_label.text = status_text
 	hit_button.disabled = not round_active or run_over
