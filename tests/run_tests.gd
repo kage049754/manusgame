@@ -48,8 +48,11 @@ func _initialize() -> void:
 	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 6}, 30, 54, 5)["valid"], "encounter beyond campaign is rejected", failures)
 	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 3, "shield": -1}, 30, 54, 5)["valid"], "negative shield in save is rejected", failures)
 	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 3, "next_bonus_damage": 1000}, 30, 54, 5)["valid"], "implausible saved bonus damage is rejected", failures)
+	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 3, "next_bonus_damage": -1}, 30, 54, 5)["valid"], "negative saved bonus damage is rejected", failures)
+	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 3, "shield": 1000}, 30, 54, 5)["valid"], "implausible saved shield is rejected", failures)
+	_check(not Rules.validate_saved_run({"player_hp": 12, "enemy_hp": 24, "encounter": 3, "next_start_shield": -1}, 30, 54, 5)["valid"], "negative saved starting shield is rejected", failures)
 	if failures.is_empty():
-		print("PASS: 34 blackjack, combat, boss, and save-validation checks")
+		print("PASS: 37 blackjack, combat, boss, and save-validation checks")
 		quit(0)
 	else:
 		for failure in failures:
