@@ -11,9 +11,9 @@ Source of truth for implementation progress. Update after every meaningful commi
 - [x] Verified Android debug APK artifact for the six-Trump/class/passive build (commit `617fdad23ccb9519cba69b5c4c76d4a4e47d6792`).
 - [x] Verified APK artifact for local save/load and three combo synergies (commit `c8276e9054cdc6a3c455efd3faa2a6521c423159`).
 - [x] Verified APK artifact for all eight Trump Cards and ten passive choices (commit `a35dd7067865d61dd02a6387230612f4edc88d70`).
-- [ ] Verify the newest APK with named/scaling enemies and victory rewards.
-- **Current phase:** Phase 3 — five-encounter roguelite run and reward choices in progress.
-- **Next step:** Verify the reward/enemy APK, add executable tests for combat transitions and save recovery, then improve boss-specific behavior and finish the remaining combo synergies.
+- [x] Verified Android debug APK artifact for the current playable prototype with card-panel UI (commit `34088cab24a2ffa4b3c097fc1a233917801db9b3`).
+- **Current phase:** Phase 4 — mobile presentation and stabilization in progress; core five-encounter run, rewards, eight Trump Cards, ten passives, six combos, and local persistence are implemented.
+- **Next step:** Add automated combat-transition/save-recovery tests, polish the mobile layout and boss feedback, then test the APK on a physical Android device.
 
 ## Phase 0 — Foundation
 Status: **In progress**
@@ -57,7 +57,7 @@ Status: **Not started**
 - [ ] Original character portraits and card art.
 - [ ] Gothic table backdrop, card reveal, damage, shield, bust, victory, and defeat feedback.
 - [ ] Sound/music controls, reduced-motion option, readable contrast.
-- [ ] Test phone aspect ratios and touch input.
+- [ ] Test phone aspect ratios, touch input, card-row overflow, and reward selection.
 - [ ] Configure Android export templates and SDK/JDK.
 - [ ] Build debug APK in CI and verify artifact can be downloaded/installed.
 - [ ] Run gameplay smoke tests on an Android device.
