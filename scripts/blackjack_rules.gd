@@ -93,3 +93,20 @@ static func validate_saved_hand(cards: Variant, minimum_cards: int = 2, maximum_
 		if str(card.get("rank", "")) not in RANKS or str(card.get("suit", "")) not in SUITS:
 			return false
 	return true
+
+static func validate_saved_deck(cards: Variant) -> bool:
+	if not cards is Array or cards.size() > 52:
+		return false
+	var seen := {}
+	for card in cards:
+		if not card is Dictionary:
+			return false
+		var rank := str(card.get("rank", ""))
+		var suit := str(card.get("suit", ""))
+		if rank not in RANKS or suit not in SUITS:
+			return false
+		var key := rank + "|" + suit
+		if seen.has(key):
+			return false
+		seen[key] = true
+	return true
