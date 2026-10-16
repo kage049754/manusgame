@@ -239,7 +239,7 @@ func _populate_cards(row: HBoxContainer, hand: Array[Dictionary], hide_first: bo
 	for i in range(hand.size()):
 		var hidden := hide_first and i == 0
 		var panel := PanelContainer.new()
-		panel.custom_minimum_size = Vector2(48, 58)
+		panel.custom_minimum_size = Vector2(54, 68)
 		var style := StyleBoxFlat.new()
 		style.bg_color = Color("#4c263c") if hidden else Color("#f3ead8")
 		style.border_color = Color("#f3c96b") if emphasize_last and i == hand.size() - 1 and not hidden else Color("#c6a45e")
@@ -569,8 +569,8 @@ func _refresh() -> void:
 		enemy_total_text = "Intent: draw to %d" % _enemy_draw_target()
 	enemy_hand_label.text = "CHALLENGER  •  Total: %s" % enemy_total_text
 	player_hand_label.text = "YOUR HAND  •  Total: %d" % _hand_total(player_hand)
-	_populate_cards(enemy_cards_row, enemy_hand, round_active)
-	_populate_cards(player_cards_row, player_hand, false)
+	_populate_cards(enemy_cards_row, enemy_hand, round_active, not round_active and enemy_hand.size() > 2)
+	_populate_cards(player_cards_row, player_hand, false, player_hand.size() > 2)
 	status_label.text = status_text
 	if status_text.begins_with("BUST") or status_text.begins_with("DEFEAT") or status_text.begins_with("The challenger wins"):
 		status_label.add_theme_color_override("font_color", Color("#ef7c86"))
