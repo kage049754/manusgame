@@ -35,7 +35,7 @@ Status: **In progress**
 - [x] Add automated tests for scoring, busts, deck uniqueness, and natural blackjack detection (9 checks).
 - [x] Add four automated shield-absorption checks and use the shared helper for incoming damage.
 - [ ] Add touch-friendly card layout and responsive phone sizing.
-- [ ] Add enemy intent and clear combat result messages.
+- [x] Add enemy intent and clear combat result messages with result-specific status colors (CI verification pending).
 
 ## Phase 2 — Classes, abilities, and builds
 Status: **Not started**
@@ -58,7 +58,8 @@ Status: **Not started**
 ## Phase 4 — Presentation and Android
 Status: **Not started**
 - [ ] Original character portraits and card art.
-- [ ] Gothic table backdrop, card reveal, damage, shield, bust, victory, and defeat feedback.
+- [ ] Gothic table backdrop, damage/shield impact effects, and full victory/defeat presentation.
+- [x] Add gold emphasis to newly drawn/revealed cards and color-code win, loss, bust, and push messages (CI verification pending).
 - [ ] Sound/music controls, reduced-motion option, readable contrast.
 - [ ] Test phone aspect ratios, touch input, card-row overflow, and reward selection.
 - [ ] Configure Android export templates and SDK/JDK.
@@ -116,7 +117,15 @@ Status: **Not started; blocked until offline release is stable**
 - The 28-check suite and Android APK build passed in CI. Physical device testing remains outstanding.
 
 
-### Save validation hardening (CI pending)
+### Save validation hardening (Verified on commit `0b9c045c703c750f03563e0f0c272c6d08a76ca4`)
 - Extracted saved-run bounds checks into the shared rules module so malformed save values can be tested independently from the UI.
 - Added six tests covering valid restoration and invalid player HP, enemy HP, encounter index, negative shield, and implausible bonus damage.
 - Persisted current shield as part of the local run save. Invalid saved state is rejected before saved values are restored; initialized fresh-run defaults remain in place.
+
+
+### Card reveal and combat feedback (CI pending)
+- Newly drawn cards are emphasized with a thicker gold border; revealed enemy cards receive the same emphasis after the hand resolves.
+- Card faces are centered consistently, including the hidden-card back, and card panels are slightly larger for touch readability.
+- Combat status text now uses distinct colors for losses/busts, wins, and pushes.
+- Added three saved-state edge cases: negative bonus damage, oversized shield, and negative starting shield. Expected rules suite: 37 checks.
+- Force-close recovery of an in-progress hand and physical Android gameplay remain unverified and are still explicit roadmap items.
