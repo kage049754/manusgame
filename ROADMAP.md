@@ -66,7 +66,8 @@ Status: **Not started**
 - [ ] Gothic table backdrop, damage/shield impact effects, and full victory/defeat presentation.
 - [x] Add gold emphasis to newly drawn/revealed cards and color-code win, loss, bust, and push messages (CI verified).
 - [ ] Sound/music controls, reduced-motion option, readable contrast.
-- [x] Make player/enemy card rows wrap instead of overflowing horizontally on narrow screens (CI verification pending).
+- [x] Make player/enemy card rows wrap instead of overflowing horizontally on narrow screens (CI verified).
+- [x] Unused shield now carries across hands, and Guard reward shield stacks with it instead of replacing it; two new rules checks added (56 total).
 - [ ] Test phone aspect ratios, touch input, card-row overflow, and reward selection on a physical device.
 - [ ] Configure Android export templates and SDK/JDK.
 - [ ] Build debug APK in CI and verify artifact can be downloaded/installed.
@@ -201,3 +202,11 @@ Status: **Not started; blocked until offline release is stable**
 - Card rows now expand to available width and wrap cards onto additional lines instead of relying on horizontal overflow.
 - Code commit: `665e6c09e148f36c820e22ae77b4a6fbba4dc3e9`.
 - Next: verify Godot validation and APK artifact; physical-device layout testing is still required.
+
+
+### Shield persistence and reward stacking (implementation committed; CI pending)
+- Aegis and combo shields no longer disappear when the next hand begins if no damage consumed them.
+- Guard's +6 starting shield stacks on top of any unused shield. Fresh-run reset still clears shield resources.
+- Added two rules checks for stacking and negative-input clamping; expected rules suite size is 56.
+- Code commits: `92d10cc6eaedb181549c35894b127d75ce8fb552`, `d8f90d5d9d512ae6238d237db7aab28b34a5e803`, `797ffcf72c6f848dc1aa0b0d7a0b7913a2f31bdb`.
+- Next: verify latest CI and Android APK artifact, then continue stabilization.
