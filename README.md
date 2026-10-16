@@ -8,7 +8,7 @@ Dungeon Dealer is an original blackjack-inspired survival RPG. The player enters
 
 ## Current progress
 
-**Current phase: Phase 3 — roguelite progression in progress.** The playable prototype now includes a tested blackjack rules engine, eight Trump Cards, ten passive choices, three class choices, three combo synergies, local run persistence, five named/scaling encounters, a final boss, and between-encounter reward choices. A debug APK has been produced and verified for earlier commits; always check the latest GitHub Actions artifact before claiming the newest code is packaged. This remains an early prototype, not a finished or device-tested release.
+**Current phase: Phase 4 — mobile presentation and stabilization in progress.** The playable prototype includes a tested blackjack rules engine, eight Trump Cards, ten passive choices, three class choices, six combo synergies, versioned local run persistence, five named/scaling encounters, a final boss, and between-encounter reward choices. The current code commit has passed Godot validation and its Android debug APK artifact has been verified by GitHub Actions. This remains an early prototype, not a finished or device-tested release.
 
 ## Core loop
 1. Enter a duel against an enemy dealer or challenger.
@@ -92,6 +92,12 @@ All six combo synergies now have gameplay effects: **Unbreakable Fate** (Aegis +
 - Cards and combat feedback must remain legible on phone screens; touch targets must be large and spaced.
 - Keep animations lightweight and optional for reduced-motion/performance settings.
 - Use original names, writing, characters, art, and UI. This is inspired by the broad concept of lethal blackjack duels, not a copy of another game's proprietary assets or exact implementation.
+
+## Latest verified build
+- Code commit: `ae77c9c980062217293c111aeed1b6c27c6c9a50`.
+- Godot Validation: https://github.com/kage049754/manusgame/actions/runs/38920452709 (passed).
+- Android APK: https://github.com/kage049754/manusgame/actions/runs/38920452680 (passed; artifact `DungeonDealer-debug-apk`, 23,914,133 bytes; SHA-256 `6a3ac48b7dadd33e55c8c858bd3099419c740123e83aa26987054da236500cc6`; expires 2026-10-30).
+- This verifies CI packaging, not installation or gameplay testing on a physical phone.
 
 ## Build and test
 The project uses Godot 4 and GDScript. Open project.godot in Godot 4. Use the headless validation workflow on every push. Android export requires matching Godot export templates and Android SDK/JDK configuration; do not claim an APK exists until a workflow artifact has actually been produced and inspected.
