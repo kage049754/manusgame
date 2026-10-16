@@ -46,3 +46,14 @@ static func absorb_damage(raw_damage: int, available_shield: int) -> Dictionary:
 		"shield": shield_pool - absorbed,
 		"absorbed": absorbed,
 	}
+
+static func resolve_hand_result(player_total: int, enemy_total: int, enemy_busted: bool = false) -> String:
+	if enemy_busted or enemy_total > 21:
+		return "enemy_bust"
+	if player_total > 21:
+		return "player_bust"
+	if player_total > enemy_total:
+		return "player_win"
+	if player_total < enemy_total:
+		return "enemy_win"
+	return "push"
