@@ -19,5 +19,7 @@ jobs:
           use-dotnet: false
       - name: Check project opens in headless editor
         run: godot --headless --editor --path . --quit
+      - name: Run blackjack rules tests
+        run: godot --headless --path . --script res://tests/run_tests.gd
       - name: Smoke-test main scene
         run: timeout 20s godot --headless --path . --quit-after 3
