@@ -8,15 +8,15 @@ Dungeon Dealer is an original blackjack-inspired survival RPG. The player enters
 
 ## Current progress
 
-**Phase 1 — playable prototype in progress.** This repository establishes the design contract, roadmap, and first playable foundation with a card deck, hit/stand, enemy turns, health, encounters, and a basic ability system. This is not yet a finished game or a verified Android APK. Check the latest commit and GitHub Actions run before treating any build as successful.
+**Current phase: Phase 3 — roguelite progression in progress.** The playable prototype now includes a tested blackjack rules engine, eight Trump Cards, ten passive choices, three class choices, three combo synergies, local run persistence, five named/scaling encounters, a final boss, and between-encounter reward choices. A debug APK has been produced and verified for earlier commits; always check the latest GitHub Actions artifact before claiming the newest code is packaged. This remains an early prototype, not a finished or device-tested release.
 
 ## Core loop
 1. Enter a duel against an enemy dealer or challenger.
 2. Draw cards and choose **Hit** or **Stand**.
 3. Use a limited **Trump Card** ability when the situation calls for it.
 4. Resolve blackjack, busts, damage, passive effects, and enemy responses.
-5. Choose rewards and continue through five encounters, ending with a boss.
-6. Save local progress and unlock more abilities as the game grows.
+5. Choose Mend, Power, or Guard rewards and continue through five encounters, ending with a boss.
+6. Save local progress on the device and resume the run after reopening.
 
 ## Gameplay rules
 - Standard 52-card deck. Number cards count at face value; J/Q/K count as 10; Ace counts as 11 or 1 to avoid busting.
@@ -31,7 +31,7 @@ Dungeon Dealer is an original blackjack-inspired survival RPG. The player enters
 - **Rogue:** swaps, counters, and tactical card manipulation.
 - **Dealer:** card control, enemy disruption, and combo setup.
 
-## Active Trump Cards
+## Active Trump Cards — implemented in the prototype
 1. **Perfect Draw** — draw a controlled card or improve the current hand under a clear, bounded rule.
 2. **Exchange** — replace a selected card with a fresh draw.
 3. **Destroy** — remove one selected card from the current hand.
@@ -41,10 +41,21 @@ Dungeon Dealer is an original blackjack-inspired survival RPG. The player enters
 7. **Rebirth** — once per run, recover from a lethal result with a small amount of health.
 8. **Executioner's Mark** — mark an enemy so the next successful win deals bonus damage.
 
-Abilities must state cost, target, duration, and limitations in the UI. Avoid abilities that silently change standard blackjack rules.
+The prototype uses one Trump Card per hand. Rebirth is once per run; other card effects have explicit hand-level rules. Abilities must communicate their limitations in the UI.
 
-## Passive abilities
-Card Reader (information about next draw or enemy intent); Steel Nerve (defined bad-outcome damage reduction); Loaded Fate (limited draw influence, never guaranteed wins); Quick Reflex (defensive response); Collector's Instinct (reward/currency improvement); Second Wind (limited recovery); Counter Specialist (timed response bonuses); High Roller (higher rewards with explicit risk); Shadow Dealer (card manipulation bonus); Boss Hunter (boss-only bonus); Blood Pact (health traded for advantage); Steady Hand (specific near-bust penalty reduction); Relic Affinity (relic bonus); Last Stand (once-per-run low-health defense); Fate Keeper (limited resource preservation or reroll).
+## Passive abilities — ten selectable prototype effects
+- **Steel Nerve:** reduces incoming damage and strengthens Aegis.
+- **Second Wind:** restores a small amount of HP once per encounter after a win.
+- **High Roller:** increases dealt damage but also increases incoming damage.
+- **Boss Hunter:** adds damage against the final boss.
+- **Card Reader:** shows the enemy draw target and strengthens Cursed Hand.
+- **Quick Reflex:** reduces incoming damage.
+- **Steady Hand:** reduces damage when losing with a total from 18 to 20.
+- **Collector's Instinct:** restores 1 HP after a win.
+- **Shadow Dealer:** adds another option to Perfect Draw.
+- **Last Stand:** increases damage while at low HP.
+
+Other planned passives and relic-related effects remain future work.
 
 ## Planned combos
 - **Perfect Execution:** Perfect Draw + Executioner's Mark.
@@ -54,7 +65,7 @@ Card Reader (information about next draw or enemy intent); Steel Nerve (defined 
 - **Second Chance:** Rebirth + Last Stand.
 - **Dealer's Trap:** Cursed Hand + Card Reader.
 
-Combos must emerge from compatible equipped abilities, be explained in the UI, and have explicit limits. No hidden random bonuses.
+Current functional synergies: **Unbreakable Fate** (Aegis + Steel Nerve), **Dealer's Trap** (Cursed Hand + Card Reader), and Executioner's Mark + Boss Hunter on the final boss. Three additional planned combos still need implementation and explicit UI presentation.
 
 ## Release scope
 
