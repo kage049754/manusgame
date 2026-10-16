@@ -117,5 +117,19 @@ static func validate_saved_deck(cards: Variant) -> bool:
 		seen[key] = true
 	return true
 
+static func validate_saved_cards(deck: Variant, player_hand: Variant, enemy_hand: Variant) -> bool:
+	if not validate_saved_deck(deck):
+		return false
+	if not validate_saved_hand(player_hand) or not validate_saved_hand(enemy_hand):
+		return false
+	var seen := {}
+	for group in [deck, player_hand, enemy_hand]:
+		for card in group:
+			var key := str(card["rank"]) + "|" + str(card["suit"])
+			if seen.has(key):
+				return false
+			seen[key] = true
+	return true
+
 static func reset_run_resources() -> Dictionary:
 	return {"shield": 0, "next_bonus_damage": 0, "next_start_shield": 0}
