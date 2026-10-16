@@ -27,6 +27,12 @@ var player_hand_label: Label
 var enemy_cards_row: HBoxContainer
 var player_cards_row: HBoxContainer
 var status_label: Label
+var reward_row: HFlowContainer
+var reward_select: OptionButton
+var claim_reward_button: Button
+var reward_claimed := false
+var next_bonus_damage := 0
+var next_start_shield := 0
 var hit_button: Button
 var stand_button: Button
 var trump_button: Button
@@ -103,7 +109,7 @@ func _build_ui() -> void:
 	root_box.add_child(status_label)
 
 	var build_row := HFlowContainer.new()
-	build_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	build_row.alignment = FlowContainer.ALIGNMENT_CENTER
 	build_row.add_theme_constant_override("separation", 10)
 	root_box.add_child(build_row)
 	var class_label := _label("CLASS", 14, Color("#d7b56d"))
@@ -122,7 +128,7 @@ func _build_ui() -> void:
 	build_row.add_child(passive_select)
 
 	reward_row = HFlowContainer.new()
-	reward_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	reward_row.alignment = FlowContainer.ALIGNMENT_CENTER
 	reward_row.add_theme_constant_override("separation", 10)
 	root_box.add_child(reward_row)
 	var reward_label := _label("VICTORY REWARD", 14, Color("#d7b56d"))
@@ -142,7 +148,7 @@ func _build_ui() -> void:
 	root_box.add_child(spacer)
 
 	var buttons := HFlowContainer.new()
-	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
+	buttons.alignment = FlowContainer.ALIGNMENT_CENTER
 	buttons.add_theme_constant_override("separation", 12)
 	root_box.add_child(buttons)
 	hit_button = _button("HIT", Color("#7f293d"))
