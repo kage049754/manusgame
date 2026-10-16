@@ -99,3 +99,7 @@ Status: **Not started; blocked until offline release is stable**
 - Added a shared hand-outcome resolver and routed the stand action through it.
 - Added five automated outcome checks: enemy bust, player win, enemy win, push, and player bust.
 - Full UI-driven transition/restart tests remain open.
+
+### Responsive layout work (CI pending)
+- Added vertical scrolling and wrapping flow rows for narrow screens.
+- Verify with CI and test on a physical Android device.
