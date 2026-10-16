@@ -550,7 +550,11 @@ func _load_progress() -> bool:
 	if save_version != SAVE_VERSION or not save.has_section_key("run", "player_hand") or not save.has_section_key("run", "enemy_hand") or not save.has_section_key("run", "deck"):
 		return false
 	var saved_deck: Variant = save.get_value("run", "deck", [])
+	var saved_player_hand: Variant = save.get_value("run", "player_hand", [])
+	var saved_enemy_hand: Variant = save.get_value("run", "enemy_hand", [])
 	if not Rules.validate_saved_deck(saved_deck):
+		return false
+	if not Rules.validate_saved_hand(saved_player_hand) or not Rules.validate_saved_hand(saved_enemy_hand):
 		return false
 	var saved_run := {"player_hp": save.get_value("run", "player_hp", STARTING_HP), "enemy_hp": save.get_value("run", "enemy_hp", STARTING_HP), "encounter": save.get_value("run", "encounter", 1), "shield": save.get_value("run", "shield", 0), "next_bonus_damage": save.get_value("run", "next_bonus_damage", 0), "next_start_shield": save.get_value("run", "next_start_shield", 0)}
 	var checked_run: Dictionary = Rules.validate_saved_run(saved_run, STARTING_HP, STARTING_HP + (MAX_ENCOUNTERS - 1) * 6, MAX_ENCOUNTERS)
@@ -569,13 +573,11 @@ func _load_progress() -> bool:
 	for card in saved_deck:
 		deck.append(card)
 	player_hand.clear()
-	for card in save.get_value("run", "player_hand", []):
-		if card is Dictionary and card.has("rank") and card.has("suit"):
-			player_hand.append(card)
+	for card in saved_player_hand:
+		player_hand.append(card)
 	enemy_hand.clear()
-	for card in save.get_value("run", "enemy_hand", []):
-		if card is Dictionary and card.has("rank") and card.has("suit"):
-			enemy_hand.append(card)
+	for card in saved_enemy_hand:
+		enemy_hand.append(card)
 	round_active = bool(save.get_value("run", "round_active", false))
 	trump_ready = bool(save.get_value("run", "trump_ready", true))
 	safe_limit = clampi(int(save.get_value("run", "safe_limit", 21)), 21, 24)
@@ -584,10 +586,6 @@ func _load_progress() -> bool:
 	boss_phase_announced = bool(save.get_value("run", "boss_phase_announced", false))
 	second_wind_used = bool(save.get_value("run", "second_wind_used", false))
 	status_text = str(save.get_value("run", "status_text", "Run restored."))
-	if not Rules.validate_saved_hand(player_hand) or not Rules.validate_saved_hand(enemy_hand):
-		player_hand.clear()
-		enemy_hand.clear()
-		return false
 	class_select.select(clampi(int(save.get_value("run", "class_index", 0)), 0, class_select.item_count - 1))
 	passive_select.select(clampi(int(save.get_value("run", "passive_index", 0)), 0, passive_select.item_count - 1))
 	if bool(save.get_value("run", "run_over", false)) or player_hp <= 0 or encounter > MAX_ENCOUNTERS:
