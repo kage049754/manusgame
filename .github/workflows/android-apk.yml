@@ -18,7 +18,7 @@ jobs:
             -v "$PWD:/project" \
             -w /project \
             barichello/godot-ci:4.3 \
-            godot --headless --path . --export-debug "Android" build/DungeonDealer.apk
+            godot --headless --verbose --path . --export-debug "Android" build/DungeonDealer.apk
       - name: Verify APK exists
         run: test -s build/DungeonDealer.apk
       - name: Upload debug APK
