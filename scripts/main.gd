@@ -24,8 +24,8 @@ var encounter_label: Label
 var health_label: Label
 var enemy_hand_label: Label
 var player_hand_label: Label
-var enemy_cards_row: HBoxContainer
-var player_cards_row: HBoxContainer
+var enemy_cards_row: HFlowContainer
+var player_cards_row: HFlowContainer
 var status_label: Label
 var reward_row: HFlowContainer
 var reward_select: OptionButton
@@ -95,15 +95,17 @@ func _build_ui() -> void:
 	enemy_hand_label = _label("", 18, Color("#f0d7d7"))
 	enemy_hand_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root_box.add_child(enemy_hand_label)
-	enemy_cards_row = HBoxContainer.new()
-	enemy_cards_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	enemy_cards_row = HFlowContainer.new()
+	enemy_cards_row.alignment = FlowContainer.ALIGNMENT_CENTER
+	enemy_cards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	enemy_cards_row.add_theme_constant_override("separation", 8)
 	root_box.add_child(enemy_cards_row)
 	player_hand_label = _label("", 18, Color("#fff3d8"))
 	player_hand_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	root_box.add_child(player_hand_label)
-	player_cards_row = HBoxContainer.new()
-	player_cards_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	player_cards_row = HFlowContainer.new()
+	player_cards_row.alignment = FlowContainer.ALIGNMENT_CENTER
+	player_cards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	player_cards_row.add_theme_constant_override("separation", 8)
 	root_box.add_child(player_cards_row)
 	status_label = _label("", 16, Color("#d7b56d"))
@@ -242,7 +244,7 @@ func _card_value(card: Dictionary) -> int:
 func _hand_total(hand: Array[Dictionary]) -> int:
 	return Rules.hand_total(hand)
 
-func _populate_cards(row: HBoxContainer, hand: Array[Dictionary], hide_first: bool, emphasize_last: bool = true) -> void:
+func _populate_cards(row: HFlowContainer, hand: Array[Dictionary], hide_first: bool, emphasize_last: bool = true) -> void:
 	for child in row.get_children():
 		child.queue_free()
 	for i in range(hand.size()):
