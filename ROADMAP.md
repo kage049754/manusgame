@@ -70,7 +70,7 @@ Status: **Not started**
 ## Phase 5 — Stabilization
 Status: **Not started**
 - [ ] Balance enemy AI, ability costs, damage, rewards, and run length.
-- [x] Add five automated checks for valid/malformed saved interrupted hands; rules suite now has 42 checks (CI verified on commit `e32aa9aa9bf7073c4222ae8632440b27f8abe92b`).
+- [x] Add five automated checks for valid/malformed saved interrupted hands; rules suite now has 48 checks (CI verified on commit `e32aa9aa9bf7073c4222ae8632440b27f8abe92b`).
 - [ ] Test deck exhaustion, Ace conversions, simultaneous defeat, save corruption, and physical-device interrupted-turn recovery.
 - [ ] Fix high-severity crashes and softlocks.
 - [ ] Update README with actually tested features and release instructions.
@@ -153,3 +153,9 @@ Status: **Not started; blocked until offline release is stable**
 ### Latest interrupted-hand recovery build
 - Godot validation: https://github.com/kage049754/manusgame/actions/runs/38930681038
 - Android APK build and artifact: https://github.com/kage049754/manusgame/actions/runs/38930681100
+
+
+### Saved-deck integrity hardening (in progress)
+- Validate saved remaining-deck type, size, rank/suit values, and duplicate cards before restoring run state.
+- Added six rules checks for full/empty valid decks and malformed/duplicate deck entries; expected suite size is 48 after CI verification.
+- Invalid saved decks are rejected before saved run values are applied, allowing a clean fresh encounter rather than partially restoring corrupted card data.
