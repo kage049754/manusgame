@@ -511,6 +511,7 @@ func _save_progress() -> void:
 	save.set_value("run", "player_hp", player_hp)
 	save.set_value("run", "enemy_hp", enemy_hp)
 	save.set_value("run", "encounter", encounter)
+	save.set_value("run", "shield", shield)
 	save.set_value("run", "run_over", run_over)
 	save.set_value("run", "class_index", class_select.selected)
 	save.set_value("run", "passive_index", passive_select.selected)
