@@ -65,7 +65,7 @@ Other planned passives and relic-related effects remain future work.
 - **Second Chance:** Rebirth + Last Stand.
 - **Dealer's Trap:** Cursed Hand + Card Reader.
 
-Current functional synergies: **Unbreakable Fate** (Aegis + Steel Nerve), **Dealer's Trap** (Cursed Hand + Card Reader), and Executioner's Mark + Boss Hunter on the final boss. Three additional planned combos still need implementation and explicit UI presentation.
+All six combo synergies now have gameplay effects: **Unbreakable Fate** (Aegis + Steel Nerve, +12 shield), **Dealer's Trap** (Cursed Hand + Card Reader, stronger enemy draw target), **Perfect Execution** (Executioner's Mark + Boss Hunter on the boss, +10 damage), **Cursed Reversal** (Exchange + Quick Reflex, +4 shield), **Second Chance** (Rebirth + Last Stand, revive at 12 HP), and **Demon's Bargain** (Raise the Limit + High Roller, safe limit 24 with High Roller's damage risk). UI polish and balance testing remain.
 
 ## Release scope
 
