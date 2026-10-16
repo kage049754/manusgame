@@ -461,25 +461,24 @@ func _check_run_end(enemy_defeated: bool) -> void:
 			status_text = "Victory. Duel %d cleared. Press NEXT DUEL to continue." % encounter
 
 func _on_next() -> void:
-	if run_over:
-		encounter = 1
-		player_hp = STARTING_HP
-		enemy_hp = STARTING_HP
-		rebirth_available = true
-		rebirth_armed = false
-		_start_encounter()
-		return
-	if round_active:
-		return
-	if enemy_hp <= 0:
-		if encounter < MAX_ENCOUNTERS and not reward_claimed:
+	var action := Rules.resolve_next_action(encounter, MAX_ENCOUNTERS, enemy_hp, run_over, round_active, reward_claimed)
+	match action:
+		"restart_run":
+			encounter = 1
+			player_hp = STARTING_HP
+			enemy_hp = STARTING_HP
+			rebirth_available = true
+			rebirth_armed = false
+			_start_encounter()
+		"blocked_active_hand", "claim_reward", "finish_run":
 			return
-		encounter += 1
-		enemy_hp = STARTING_HP + (encounter - 1) * 6
-		player_hp = mini(STARTING_HP, player_hp + 5)
-		_start_encounter()
-	else:
-		_start_hand()
+		"next_encounter":
+			encounter += 1
+			enemy_hp = STARTING_HP + (encounter - 1) * 6
+			player_hp = mini(STARTING_HP, player_hp + 5)
+			_start_encounter()
+		"next_hand":
+			_start_hand()
 
 func _on_claim_reward() -> void:
 	if round_active or run_over or enemy_hp > 0 or encounter >= MAX_ENCOUNTERS or reward_claimed:
