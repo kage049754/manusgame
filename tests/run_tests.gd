@@ -31,8 +31,14 @@ func _initialize() -> void:
 	_check(Rules.resolve_hand_result(17, 19) == "enemy_win", "higher enemy total wins the hand", failures)
 	_check(Rules.resolve_hand_result(19, 19) == "push", "equal totals resolve as a push", failures)
 	_check(Rules.resolve_hand_result(22, 18) == "player_bust", "player bust outcome is classified safely", failures)
+	_check(Rules.resolve_next_action(2, 5, 18, true, false, true) == "restart_run", "restart takes priority after a finished run", failures)
+	_check(Rules.resolve_next_action(2, 5, 18, false, true, true) == "blocked_active_hand", "cannot advance while a hand is active", failures)
+	_check(Rules.resolve_next_action(2, 5, 0, false, false, false) == "claim_reward", "defeated encounter requires reward before advancing", failures)
+	_check(Rules.resolve_next_action(2, 5, 0, false, false, true) == "next_encounter", "claimed reward allows next encounter", failures)
+	_check(Rules.resolve_next_action(5, 5, 0, false, false, true) == "finish_run", "final encounter does not advance beyond campaign", failures)
+	_check(Rules.resolve_next_action(3, 5, 18, false, false, true) == "next_hand", "living enemy advances to next hand", failures)
 	if failures.is_empty():
-		print("PASS: 18 blackjack and combat rules checks")
+		print("PASS: 24 blackjack, combat, and transition checks")
 		quit(0)
 	else:
 		for failure in failures:
