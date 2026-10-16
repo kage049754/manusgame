@@ -288,23 +288,26 @@ func _on_hit() -> void:
 	player_hand.append(_draw_card())
 	var total := _hand_total(player_hand)
 	if total > safe_limit:
-		round_active = false
-		var damage := 10 if encounter == MAX_ENCOUNTERS else 8
-		if class_select.get_item_text(class_select.selected) == "Knight" or passive_select.get_item_text(passive_select.selected) == "Steel Nerve":
-			damage = maxi(0, damage - 2)
-		if passive_select.get_item_text(passive_select.selected) == "Quick Reflex":
-			damage = maxi(0, damage - 1)
-		if passive_select.get_item_text(passive_select.selected) == "High Roller":
-			damage += 2
-		var damage_result := Rules.absorb_damage(damage, shield)
-		damage = int(damage_result["damage"])
-		shield = int(damage_result["shield"])
-		player_hp = maxi(0, player_hp - damage)
-		status_text = "BUST at %d. You take %d damage." % [total, damage]
-		_check_run_end(false)
-		if not run_over:
-			status_text += " Press NEXT HAND to continue the duel."
+		_apply_bust_damage(total)
 	_refresh()
+
+func _apply_bust_damage(total: int) -> void:
+	round_active = false
+	var damage := 10 if encounter == MAX_ENCOUNTERS else 8
+	if class_select.get_item_text(class_select.selected) == "Knight" or passive_select.get_item_text(passive_select.selected) == "Steel Nerve":
+		damage = maxi(0, damage - 2)
+	if passive_select.get_item_text(passive_select.selected) == "Quick Reflex":
+		damage = maxi(0, damage - 1)
+	if passive_select.get_item_text(passive_select.selected) == "High Roller":
+		damage += 2
+	var damage_result := Rules.absorb_damage(damage, shield)
+	damage = int(damage_result["damage"])
+	shield = int(damage_result["shield"])
+	player_hp = maxi(0, player_hp - damage)
+	status_text = "BUST at %d. You take %d damage." % [total, damage]
+	_check_run_end(false)
+	if not run_over:
+		status_text += " Press NEXT HAND to continue the duel."
 
 func _enemy_draw_target() -> int:
 	var target := 17 + int((encounter - 1) / 2)
@@ -319,11 +322,15 @@ func _enemy_draw_target() -> int:
 func _on_stand() -> void:
 	if not round_active or run_over:
 		return
+	var player_total := _hand_total(player_hand)
+	if player_total > safe_limit:
+		_apply_bust_damage(player_total)
+		_refresh()
+		return
 	round_active = false
 	var enemy_target := _enemy_draw_target()
 	while _hand_total(enemy_hand) < enemy_target:
 		enemy_hand.append(_draw_card())
-	var player_total := _hand_total(player_hand)
 	var enemy_total := _hand_total(enemy_hand)
 	var hand_result := Rules.resolve_hand_result(player_total, enemy_total, false, safe_limit)
 	if hand_result == "enemy_bust":
