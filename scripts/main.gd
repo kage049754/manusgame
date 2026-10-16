@@ -52,14 +52,24 @@ func _build_ui() -> void:
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 
+	var scroll := ScrollContainer.new()
+	scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	add_child(scroll)
+
+	var margins := MarginContainer.new()
+	margins.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	margins.add_theme_constant_override("margin_left", 16)
+	margins.add_theme_constant_override("margin_right", 16)
+	margins.add_theme_constant_override("margin_top", 16)
+	margins.add_theme_constant_override("margin_bottom", 16)
+	scroll.add_child(margins)
+
 	root_box = VBoxContainer.new()
-	root_box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	root_box.add_theme_constant_override("separation", 12)
-	root_box.add_theme_constant_override("margin_left", 24)
-	root_box.add_theme_constant_override("margin_right", 24)
-	root_box.add_theme_constant_override("margin_top", 18)
-	root_box.add_theme_constant_override("margin_bottom", 18)
-	add_child(root_box)
+	margins.add_child(root_box)
 
 	var title := _label("DUNGEON DEALER", 28, Color("#d7b56d"))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -91,7 +101,7 @@ func _build_ui() -> void:
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root_box.add_child(status_label)
 
-	var build_row := HBoxContainer.new()
+	var build_row := HFlowContainer.new()
 	build_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	build_row.add_theme_constant_override("separation", 10)
 	root_box.add_child(build_row)
@@ -110,7 +120,7 @@ func _build_ui() -> void:
 		passive_select.add_item(passive_name)
 	build_row.add_child(passive_select)
 
-	reward_row = HBoxContainer.new()
+	reward_row = HFlowContainer.new()
 	reward_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	reward_row.add_theme_constant_override("separation", 10)
 	root_box.add_child(reward_row)
@@ -130,7 +140,7 @@ func _build_ui() -> void:
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root_box.add_child(spacer)
 
-	var buttons := HBoxContainer.new()
+	var buttons := HFlowContainer.new()
 	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
 	buttons.add_theme_constant_override("separation", 12)
 	root_box.add_child(buttons)
