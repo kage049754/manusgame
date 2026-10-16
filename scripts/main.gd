@@ -94,7 +94,7 @@ func _build_ui() -> void:
 	build_row.add_child(passive_label)
 	passive_select = OptionButton.new()
 	passive_select.custom_minimum_size = Vector2(180, 44)
-	for passive_name in ["Steel Nerve", "Second Wind", "High Roller", "Boss Hunter", "Card Reader"]:
+	for passive_name in ["Steel Nerve", "Second Wind", "High Roller", "Boss Hunter", "Card Reader", "Quick Reflex", "Steady Hand", "Collector's Instinct", "Shadow Dealer", "Last Stand"]:
 		passive_select.add_item(passive_name)
 	build_row.add_child(passive_select)
 
@@ -211,8 +211,14 @@ func _on_hit() -> void:
 		var damage := 8
 		if class_select.get_item_text(class_select.selected) == "Knight" or passive_select.get_item_text(passive_select.selected) == "Steel Nerve":
 			damage = maxi(0, damage - 2)
+		if passive_select.get_item_text(passive_select.selected) == "Quick Reflex":
+			damage = maxi(0, damage - 1)
 		if passive_select.get_item_text(passive_select.selected) == "High Roller":
 			damage += 2
+		if passive_select.get_item_text(passive_select.selected) == "Quick Reflex":
+			damage = maxi(0, damage - 1)
+		if passive_select.get_item_text(passive_select.selected) == "Steady Hand" and _hand_total(player_hand) >= 18 and _hand_total(player_hand) <= 20:
+			damage = maxi(0, damage - 2)
 		var blocked: int = mini(shield, damage)
 		damage -= blocked
 		shield -= blocked
@@ -241,6 +247,10 @@ func _on_stand() -> void:
 			damage += 2
 		if passive_select.get_item_text(passive_select.selected) == "High Roller":
 			damage += 4
+		if passive_select.get_item_text(passive_select.selected) == "Last Stand" and player_hp <= 10:
+			damage += 3
+		if passive_select.get_item_text(passive_select.selected) == "Collector's Instinct":
+			player_hp = mini(STARTING_HP, player_hp + 1)
 		if passive_select.get_item_text(passive_select.selected) == "Boss Hunter" and encounter == MAX_ENCOUNTERS:
 			damage += 4
 		if passive_select.get_item_text(passive_select.selected) == "Second Wind" and not second_wind_used:
@@ -283,6 +293,8 @@ func _on_trump() -> void:
 		"Perfect Draw":
 			var candidates: Array[Dictionary] = []
 			var draw_count := 4 if class_select.get_item_text(class_select.selected) == "Dealer" else 3
+			if passive_select.get_item_text(passive_select.selected) == "Shadow Dealer":
+				draw_count += 1
 			for _i in range(draw_count):
 				candidates.append(_draw_card())
 			var chosen: Dictionary = candidates[0]
