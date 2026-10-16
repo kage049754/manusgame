@@ -273,9 +273,9 @@ func _on_hit() -> void:
 			damage = maxi(0, damage - 1)
 		if passive_select.get_item_text(passive_select.selected) == "High Roller":
 			damage += 2
-		var blocked: int = mini(shield, damage)
-		damage -= blocked
-		shield -= blocked
+		var damage_result := Rules.absorb_damage(damage, shield)
+		damage = int(damage_result["damage"])
+		shield = int(damage_result["shield"])
 		player_hp = maxi(0, player_hp - damage)
 		status_text = "BUST at %d. You take %d damage." % [total, damage]
 		_check_run_end(false)
@@ -339,9 +339,9 @@ func _on_stand() -> void:
 			damage = maxi(0, damage - 1)
 		if passive_select.get_item_text(passive_select.selected) == "Steady Hand" and player_total >= 18 and player_total <= 20:
 			damage = maxi(0, damage - 2)
-		var blocked: int = mini(shield, damage)
-		damage -= blocked
-		shield -= blocked
+		var damage_result := Rules.absorb_damage(damage, shield)
+		damage = int(damage_result["damage"])
+		shield = int(damage_result["shield"])
 		player_hp = maxi(0, player_hp - damage)
 		status_text = "The challenger wins (%d to %d). You take %d damage." % [enemy_total, player_total, damage]
 	else:
@@ -517,6 +517,17 @@ func _load_progress() -> void:
 	next_start_shield = int(save.get_value("run", "next_start_shield", 0))
 	enemy_hp = int(save.get_value("run", "enemy_hp", STARTING_HP))
 	encounter = int(save.get_value("run", "encounter", 1))
+	# Reject malformed values before they can create impossible health or progression states.
+	if player_hp < 1 or player_hp > STARTING_HP or enemy_hp < 1 or enemy_hp > STARTING_HP + (MAX_ENCOUNTERS - 1) * 6 or encounter < 1 or encounter > MAX_ENCOUNTERS:
+		player_hp = STARTING_HP
+		enemy_hp = STARTING_HP
+		encounter = 1
+		rebirth_available = true
+		rebirth_armed = false
+		reward_claimed = false
+		next_bonus_damage = 0
+		next_start_shield = 0
+		return
 	if bool(save.get_value("run", "run_over", false)) or player_hp <= 0 or encounter > MAX_ENCOUNTERS:
 		player_hp = STARTING_HP
 		enemy_hp = STARTING_HP
