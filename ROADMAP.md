@@ -5,10 +5,10 @@ Source of truth for implementation progress. Update after every meaningful commi
 ## Current status
 - [x] Repository design contract and AI instructions written.
 - [x] Initial Godot project and playable prototype source added.
-- [ ] CI validation completed successfully.
-- [ ] Android APK produced and artifact verified.
+- [x] Godot headless validation and main-scene smoke test passed in GitHub Actions (commit `160dc757fd969f2e7786f5d3b9bc362d7221be50`).
+- [ ] Android APK produced and artifact verified; latest export attempt is still running, and no APK artifact is confirmed.
 - **Current phase:** Phase 1 — playable prototype.
-- **Next step:** Run GitHub Actions validation, inspect logs, fix issues, then expand tests and implement the complete ability/encounter loop.
+- **Next step:** Confirm the Android export workflow result. If export fails, inspect the exact logs and repair the preset; once an APK artifact is verified, expand automated blackjack tests and implement classes/abilities.
 
 ## Phase 0 — Foundation
 Status: **In progress**
@@ -75,4 +75,4 @@ Status: **Not started; blocked until offline release is stable**
 ### Initial repository setup
 - Added design, AI development contract, and phased roadmap.
 - Added initial Godot 4 blackjack table prototype with deck logic, hit/stand, enemy response, HP, and encounter progression.
-- Validation remains pending until CI reports a completed pass.
+- Godot validation passed. Android export has not yet produced a verified artifact; export configuration is being debugged from workflow logs.
