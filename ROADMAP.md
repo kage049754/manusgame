@@ -66,7 +66,8 @@ Status: **Not started**
 - [ ] Gothic table backdrop, damage/shield impact effects, and full victory/defeat presentation.
 - [x] Add gold emphasis to newly drawn/revealed cards and color-code win, loss, bust, and push messages (CI verified).
 - [ ] Sound/music controls, reduced-motion option, readable contrast.
-- [ ] Test phone aspect ratios, touch input, card-row overflow, and reward selection.
+- [x] Make player/enemy card rows wrap instead of overflowing horizontally on narrow screens (CI verification pending).
+- [ ] Test phone aspect ratios, touch input, card-row overflow, and reward selection on a physical device.
 - [ ] Configure Android export templates and SDK/JDK.
 - [ ] Build debug APK in CI and verify artifact can be downloaded/installed.
 - [ ] Run gameplay smoke tests on an Android device.
@@ -193,3 +194,10 @@ Status: **Not started; blocked until offline release is stable**
 - Added an automated validation check; expected suite size is 54.
 - Code commits: `88de90c4faadfaec0c7e10a347b3cf9da0faf746`, `2f7cac2ecd703dc392aa09a888c86939516c1862`, `8937b9e368979cbadbebe59ca0d3f6550d56572e`.
 - Next: confirm latest Godot validation and Android APK artifact; continue with save-recovery edge cases.
+
+
+### Narrow-screen card wrapping (implementation committed; CI pending)
+- Replaced fixed horizontal card rows with wrapping flow containers for both player and enemy hands.
+- Card rows now expand to available width and wrap cards onto additional lines instead of relying on horizontal overflow.
+- Code commit: `665e6c09e148f36c820e22ae77b4a6fbba4dc3e9`.
+- Next: verify Godot validation and APK artifact; physical-device layout testing is still required.
